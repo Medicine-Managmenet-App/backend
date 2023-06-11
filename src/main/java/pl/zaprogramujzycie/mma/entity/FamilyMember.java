@@ -23,7 +23,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-//@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class FamilyMember {
 
     @Id
