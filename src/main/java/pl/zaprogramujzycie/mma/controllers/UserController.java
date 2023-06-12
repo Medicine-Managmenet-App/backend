@@ -3,10 +3,6 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,17 +10,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 import pl.zaprogramujzycie.mma.DTO.UserDTO;
 import pl.zaprogramujzycie.mma.entity.User;
 import pl.zaprogramujzycie.mma.repositories.UserRepository;
-import pl.zaprogramujzycie.mma.utils.UserService;
+import pl.zaprogramujzycie.mma.services.UserService;
 
 
 import java.net.URI;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
 @RestController
-
 @RequestMapping("/users")
 public class UserController {
 

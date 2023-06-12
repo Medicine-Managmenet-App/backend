@@ -12,13 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.zaprogramujzycie.mma.DTO.MedicineDTO;
+import pl.zaprogramujzycie.mma.DTO.PrescribedMedicinesDTO;
 import pl.zaprogramujzycie.mma.entity.Medicine;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
-import pl.zaprogramujzycie.mma.utils.MedicineService;
+import pl.zaprogramujzycie.mma.services.MedicineService;
 
 import java.net.URI;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -27,15 +27,10 @@ import java.util.Optional;
 @RequestMapping("/medicines")
 public class MedicineController {
 
-    private static MedicineRepository medicineRepository;
-
     private MedicineService service;
 
     MedicineDTO dto;
 
-    MedicineController(final MedicineRepository medicineRepository) {
-        this.medicineRepository = medicineRepository;
-    }
 
     @Operation(
             operationId = "getMedicines",
@@ -47,13 +42,8 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @GetMapping
-    public ResponseEntity<List<Medicine>> findAll(Pageable pageable) {
-        Page<Medicine> page = medicineRepository.findAll(
-                PageRequest.of(
-                        pageable.getPageNumber(),
-                        pageable.getPageSize(),
-                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "expirationDate"))));
-        return ResponseEntity.ok(page.getContent());
+    public ResponseEntity<List<MedicineDTO>> findAll(Pageable pageable) {
+        return null;
     }
 
     @Operation(
@@ -67,17 +57,8 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PostMapping
-     ResponseEntity<Void> createMedicine(@RequestBody MedicineDTO newMedicineRequest, UriComponentsBuilder ucb) {
-        // ToDo: This part should be refactored, to apply Single Responsibility Rule
-        Medicine newMedicine = new Medicine(newMedicineRequest.getName(), newMedicineRequest.getExpirationDate(),
-                newMedicineRequest.getPeriodAfterOpening());
-        Medicine savedMedicine = medicineRepository.save(newMedicine);
-
-        URI locationOfNewMedicine = ucb
-                .path("medicines/{id}")
-                .buildAndExpand(savedMedicine.getId())
-                .toUri();
-        return ResponseEntity.created(locationOfNewMedicine).build();
+     ResponseEntity<MedicineDTO> createMedicine(@RequestBody MedicineDTO newMedicineRequest, UriComponentsBuilder ucb) {
+        return null;
     }
 
     @Operation(
@@ -91,14 +72,10 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @GetMapping("medicines/{requestedId}")
-    public ResponseEntity<Medicine> findById(@PathVariable Long requestedId) {
-        Optional<Medicine> medicineOptional = medicineRepository.findById(requestedId);
-        if (medicineOptional.isPresent()) {
-            return ResponseEntity.ok(medicineOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<MedicineDTO> findById(@PathVariable Long requestedId) {
+            return null;
     }
+
 
     @Operation(
             operationId = "Update a medicine by Id",
@@ -112,11 +89,9 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PatchMapping("medicines/{requestedId}")
-    private ResponseEntity<Void> updateMedicine(@PathVariable Long id, @RequestBody MedicineDTO dto, UriComponentsBuilder ucb) {
-        service.partialUpdate(id, dto.getName(), dto.getExpirationDate(), dto.getPeriodAfterOpening());
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    private ResponseEntity<MedicineDTO> updateMedicine(@PathVariable Long id, @RequestBody MedicineDTO MedicineDto) {
+        return null;
     }
-
 
     @Operation(
             operationId = "Delete medicine by Id",
@@ -128,22 +103,9 @@ public class MedicineController {
             @ApiResponse(responseCode = "404", description = "Medicine not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @DeleteMapping("medicines/{requestedId}")
-    public static ResponseEntity<Long> deleteMedicine(@PathVariable Long id) {
-        int response = HttpStatus.NO_CONTENT.value();
-        try {
-            Optional<Medicine> medicine = medicineRepository.findById(id);
-            medicineRepository.delete(medicine.get());
-        } catch (NoSuchElementException e) {
-            System.out.println("catch exception");
-            response = HttpStatus.NOT_FOUND.value();
-        }
-        return ResponseEntity.status(response).build();
+
+    @DeleteMapping("/{requestedId}")
+    private ResponseEntity<String> deleteMedicine(@PathVariable Long id) {
+        return null;
     }
-
-    public static void main(String[] args) {
-        System.out.println(MedicineController.deleteMedicine(3L));
-    }
-
-
 }
