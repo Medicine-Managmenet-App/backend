@@ -12,10 +12,10 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrescriptionDTO {
+public class PrescribedMedicinesDTO {
 
     private Long id;
 
-    private List<PrescribedMedicineDTO> prescribedMedicines;
+    private List<MedicineDTO> prescribedMedicines;
 
 }

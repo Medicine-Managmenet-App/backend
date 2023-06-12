@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChildDTO extends FamilyMemberDTO{
+public class FamilyMemberChildDTO extends FamilyMemberDTO{
 
 
     @NotNull
