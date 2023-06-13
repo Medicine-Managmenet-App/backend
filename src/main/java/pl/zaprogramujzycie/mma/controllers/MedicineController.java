@@ -16,21 +16,18 @@ import pl.zaprogramujzycie.mma.DTO.PrescribedMedicinesDTO;
 import pl.zaprogramujzycie.mma.entity.Medicine;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
 import pl.zaprogramujzycie.mma.services.MedicineService;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 
 @RestController
-
 @RequestMapping("/medicines")
 public class MedicineController {
 
     private MedicineService service;
 
     MedicineDTO dto;
-
 
     @Operation(
             operationId = "getMedicines",
@@ -75,7 +72,6 @@ public class MedicineController {
     public ResponseEntity<MedicineDTO> findById(@PathVariable Long requestedId) {
             return null;
     }
-
 
     @Operation(
             operationId = "Update a medicine by Id",
