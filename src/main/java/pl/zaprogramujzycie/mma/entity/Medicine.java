@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,23 +26,24 @@ public class Medicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
+    @Column(nullable = false)
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
     private double dosage;
-    private OffsetDateTime administrationTime;
+    private List<OffsetDateTime> administrationTimes;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Medicine medicine = (Medicine) o;
-        return periodAfterOpening == medicine.periodAfterOpening && Double.compare(medicine.dosage, dosage) == 0 && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(administrationTime, medicine.administrationTime);
+        return periodAfterOpening == medicine.periodAfterOpening && Double.compare(medicine.dosage, dosage) == 0 && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(administrationTimes, medicine.administrationTimes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, expirationDate, periodAfterOpening, dosage, administrationTime);
+        return Objects.hash(id, name, expirationDate, periodAfterOpening, dosage, administrationTimes);
     }
 }
