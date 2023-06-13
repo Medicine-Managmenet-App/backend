@@ -29,17 +29,19 @@ public class Medicine {
     private String name;
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
+    private double dosage;
+    private OffsetDateTime administrationTime;
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Medicine medicine = (Medicine) o;
-        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate);
+        Medicine medicine = (Medicine) o;
+        return periodAfterOpening == medicine.periodAfterOpening && Double.compare(medicine.dosage, dosage) == 0 && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(administrationTime, medicine.administrationTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, expirationDate, periodAfterOpening);
+        return Objects.hash(id, name, expirationDate, periodAfterOpening, dosage, administrationTime);
     }
 }
