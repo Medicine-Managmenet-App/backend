@@ -35,17 +35,19 @@ public class FamilyMember {
     @ManyToOne
     @Column(nullable = false)
     private Family family;
+    @OneToOne
+    private User user;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final FamilyMember that = (FamilyMember) o;
-        return isChild == that.isChild && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(family, that.family);
+        return isChild == that.isChild && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(family, that.family) && Objects.equals(user, that.user);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, isChild, prescribedMedicines, family);
+        return Objects.hash(id, name, isChild, prescribedMedicines, family, user);
     }
 }
