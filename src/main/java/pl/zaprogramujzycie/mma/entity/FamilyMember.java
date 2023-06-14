@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Objects;
@@ -31,17 +32,20 @@ public class FamilyMember {
     private boolean isChild;
     @OneToOne
     private PrescribedMedicines prescribedMedicines;
+    @ManyToOne
+    @Column(nullable = false)
+    private Family family;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FamilyMember that = (FamilyMember) o;
-        return isChild == that.isChild && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(prescribedMedicines, that.prescribedMedicines);
+        final FamilyMember that = (FamilyMember) o;
+        return isChild == that.isChild && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(family, that.family);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, isChild, prescribedMedicines);
+        return Objects.hash(id, name, isChild, prescribedMedicines, family);
     }
 }

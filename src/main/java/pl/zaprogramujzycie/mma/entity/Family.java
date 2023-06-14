@@ -9,38 +9,35 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "prescribed_medicines")
+@Table(name = "families")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class PrescribedMedicines {
+public class Family {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToMany
-    @JoinColumn(referencedColumnName = "id")
-    private List<Medicine> medicines;
+    @OneToMany(mappedBy = "family")
+    private List<FamilyMember> members;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final PrescribedMedicines that = (PrescribedMedicines) o;
-        return Objects.equals(id, that.id) && Objects.equals(medicines, that.medicines);
+        final Family family = (Family) o;
+        return Objects.equals(id, family.id) && Objects.equals(members, family.members);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, medicines);
+        return Objects.hash(id, members);
     }
 }

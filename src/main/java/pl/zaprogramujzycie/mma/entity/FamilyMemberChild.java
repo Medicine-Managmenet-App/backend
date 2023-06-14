@@ -13,11 +13,11 @@ public class FamilyMemberChild extends FamilyMember {
     private float weight;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        FamilyMemberChild that = (FamilyMemberChild) o;
+        final FamilyMemberChild that = (FamilyMemberChild) o;
         return age == that.age && Float.compare(that.weight, weight) == 0;
     }
 

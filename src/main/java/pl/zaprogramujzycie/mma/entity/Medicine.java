@@ -35,10 +35,10 @@ public class Medicine {
     private List<OffsetDateTime> administrationTimes;
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Medicine medicine = (Medicine) o;
+        final Medicine medicine = (Medicine) o;
         return periodAfterOpening == medicine.periodAfterOpening && Double.compare(medicine.dosage, dosage) == 0 && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(administrationTimes, medicine.administrationTimes);
     }
 
