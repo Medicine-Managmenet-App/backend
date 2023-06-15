@@ -17,7 +17,6 @@ import pl.zaprogramujzycie.mma.DTO.PrescribedMedicinesDTO;
 import pl.zaprogramujzycie.mma.entity.Medicine;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
 import pl.zaprogramujzycie.mma.services.MedicineService;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +74,6 @@ public class MedicineController {
     public ResponseEntity<MedicineDTO> findById(@PathVariable long id) {
             return null;
     }
-
 
     @Operation(
             operationId = "Update a medicine by Id",
