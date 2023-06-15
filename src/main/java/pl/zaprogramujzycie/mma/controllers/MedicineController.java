@@ -3,6 +3,7 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +22,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-
+@Tag(name ="Medicine", description = "Medicine management APIs")
 @RestController
-
 @RequestMapping("/medicines")
 public class MedicineController {
 
@@ -31,15 +31,15 @@ public class MedicineController {
 
     MedicineDTO dto;
 
-
     @Operation(
-            operationId = "getMedicines",
+            // operationId = "getMedicines",
+            summary = "get all medicines",
             description = "returns all registered medicines",
             tags = "Medicines"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Medicine found", ref = "#/components/schemas/Medicine"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
     public ResponseEntity<List<MedicineDTO>> findAll(Pageable pageable) {
@@ -54,10 +54,10 @@ public class MedicineController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Medicine created successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-     ResponseEntity<MedicineDTO> createMedicine(@RequestBody MedicineDTO newMedicineRequest, UriComponentsBuilder ucb) {
+     ResponseEntity<MedicineDTO> createMedicine(@RequestBody MedicineDTO newMedicineRequest) {
         return null;
     }
 
@@ -69,10 +69,10 @@ public class MedicineController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Medicine found", ref = "#/components/schemas/Medicine"),
             @ApiResponse(responseCode = "404", description = "Medicine not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("medicines/{requestedId}")
-    public ResponseEntity<MedicineDTO> findById(@PathVariable Long requestedId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<MedicineDTO> findById(@PathVariable long id) {
             return null;
     }
 
@@ -86,10 +86,10 @@ public class MedicineController {
             @ApiResponse(responseCode = "201", description = "Medicine updated successfully", ref = "#/components/schemas/Medicine"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Medicine not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping("medicines/{requestedId}")
-    private ResponseEntity<MedicineDTO> updateMedicine(@PathVariable Long id, @RequestBody MedicineDTO MedicineDto) {
+    @PatchMapping("/{id}")
+    private ResponseEntity<MedicineDTO> updateMedicine(@PathVariable long id, @RequestBody MedicineDTO MedicineDto) {
         return null;
     }
 
@@ -101,11 +101,11 @@ public class MedicineController {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Medicine deleted successfully"),
             @ApiResponse(responseCode = "404", description = "Medicine not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
 
-    @DeleteMapping("/{requestedId}")
-    private ResponseEntity<String> deleteMedicine(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    private ResponseEntity<String> deleteMedicine(@PathVariable long id) {
         return null;
     }
 }

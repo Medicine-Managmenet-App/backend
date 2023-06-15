@@ -8,17 +8,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.zaprogramujzycie.mma.DTO.PrescribedMedicinesDTO;
-import pl.zaprogramujzycie.mma.services.PrescribedMedicinesService;
+// import pl.zaprogramujzycie.mma.services.PrescribedMedicinesService;
 
-import java.net.URI;
 
 
 @RestController
 @RequestMapping("familyMembers/{id}")
 public class PrescribedMedicinesController {
 
-    @Autowired
-    private PrescribedMedicinesService prescribedMedicinesService;
+    // @Autowired
+    // private PrescribedMedicinesService prescribedMedicinesService;
+   //
+   //          @
+   // PrescribedMedicinesDTO prescribedMedicinesDTO;
 
     @Operation(
             operationId = "createPrescribedMedicines",
@@ -28,11 +30,10 @@ public class PrescribedMedicinesController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "PrescribedMedicines created successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    public ResponseEntity<PrescribedMedicinesDTO> createPrescribedMedicines(@PathVariable long familyMemberId, @RequestBody PrescribedMedicinesDTO prescribedMedicinesDTO,
-                                                                      UriComponentsBuilder ucb){
+    public ResponseEntity<PrescribedMedicinesDTO> createPrescribedMedicines(/*@PathVariable long id,*/ @RequestBody PrescribedMedicinesDTO prescribedMedicinesDTO){
         return null;
     }
 
@@ -44,10 +45,10 @@ public class PrescribedMedicinesController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "PrescribedMedicines found", ref = "#/components/schemas/PrescribedMedicines"),
             @ApiResponse(responseCode = "404", description = "PrescribedMedicines not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/prescription")
-    public ResponseEntity<PrescribedMedicinesDTO> getPrescribedMedicines(@PathVariable long requestedId) {
+    public ResponseEntity<PrescribedMedicinesDTO> getPrescribedMedicines(@PathVariable long id) {
         return null;
     }
 
@@ -60,10 +61,10 @@ public class PrescribedMedicinesController {
             @ApiResponse(responseCode = "201", description = "PrescribedMedicines updated successfully", ref = "#/components/schemas/PrescribedMedicines"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "PrescribedMedicines not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping("/prescription")
-    public ResponseEntity<PrescribedMedicinesDTO> updatePrescribedMedicines(@PathVariable("familyMemberId") long familyMemberId,
+    public ResponseEntity<PrescribedMedicinesDTO> updatePrescribedMedicines(@PathVariable("familyMemberId") long id,
                                                                             @RequestBody PrescribedMedicinesDTO prescribedMedicinesDTO){
         return null;
     }
@@ -75,10 +76,10 @@ public class PrescribedMedicinesController {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "PrescribedMedicines deleted successfully"),
             @ApiResponse(responseCode = "404", description = "PrescribedMedicines not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/prescription")
-    public ResponseEntity<String> deletePrescribedMedicines(@PathVariable("familyMemberId") long familyMemberId){
+    public ResponseEntity<String> deletePrescribedMedicines(@PathVariable("familyMemberId") long id){
         return null;
     }
 

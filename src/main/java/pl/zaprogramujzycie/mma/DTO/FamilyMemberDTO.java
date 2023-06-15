@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.Objects;
 
 @Setter
 @Getter
@@ -25,6 +26,18 @@ public class FamilyMemberDTO {
     @NotNull
     private boolean isChild;
 
-    private PrescriptionDTO prescription;
+    private PrescribedMedicinesDTO prescribedMedicines;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final FamilyMemberDTO that = (FamilyMemberDTO) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

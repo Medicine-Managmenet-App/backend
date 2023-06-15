@@ -13,9 +13,9 @@ import java.util.List;
 
 public class FamilyMemberController {
 
-    private FamilyMemberService service;
+    // private FamilyMemberService service;
 
-    FamilyMemberDTO dto;
+    // FamilyMemberDTO dto;
 
 
     @Operation(
@@ -25,7 +25,7 @@ public class FamilyMemberController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "FamilyMembers found", ref = "#/components/schemas/FamilyMember"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
     public ResponseEntity<List<FamilyMemberDTO>> findAll(Pageable pageable) {
@@ -40,7 +40,7 @@ public class FamilyMemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "FamilyMember created successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
     ResponseEntity<FamilyMemberDTO> createFamilyMember(@RequestBody FamilyMemberDTO newFamilyMemberRequest, UriComponentsBuilder ucb) {
@@ -55,16 +55,16 @@ public class FamilyMemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "FamilyMember found", ref = "#/components/schemas/FamilyMember"),
             @ApiResponse(responseCode = "404", description = "FamilyMember not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("familymembers/{requestedId}")
-    public ResponseEntity<FamilyMemberDTO> findById(@PathVariable Long requestedId) {
+    @GetMapping("familymembers/{id}")
+    public ResponseEntity<FamilyMemberDTO> findById(@PathVariable long id) {
         return null;
     }
 
 
     @Operation(
-            operationId = "UpdateFamilyMember",
+            operationId = "updateFamilyMember",
             description = "update family member",
             tags = "FamilyMember"
     )
@@ -72,9 +72,9 @@ public class FamilyMemberController {
             @ApiResponse(responseCode = "201", description = "FamilyMember updated successfully", ref = "#/components/schemas/FamilyMember"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "FamilyMember not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping("familymembers/{requestedId}")
+    @PatchMapping("familymembers/{id}")
     private ResponseEntity<FamilyMemberDTO> updateFamilyMember(@PathVariable Long id, @RequestBody FamilyMemberDTO familyMemberDto) {
         return null;
     }
@@ -87,11 +87,13 @@ public class FamilyMemberController {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "FamilyMember deleted successfully"),
             @ApiResponse(responseCode = "404", description = "FamilyMember not found"),
-            @ApiResponse(responseCode = "500", description = "internal server error")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
 
-    @DeleteMapping("/{requestedId}")
-    private ResponseEntity<String> deleteFamilyMember(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    private ResponseEntity<String> deleteFamilyMember(@PathVariable long id) {
         return null;
     }
+
+
 }
