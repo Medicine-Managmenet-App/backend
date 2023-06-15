@@ -31,19 +31,17 @@ public class Medicine {
     @Column(nullable = false)
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
-    private double dosage;
-    private List<OffsetDateTime> administrationTimes;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Medicine medicine = (Medicine) o;
-        return periodAfterOpening == medicine.periodAfterOpening && Double.compare(medicine.dosage, dosage) == 0 && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(administrationTimes, medicine.administrationTimes);
+        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, expirationDate, periodAfterOpening, dosage, administrationTimes);
+        return Objects.hash(id, name, expirationDate, periodAfterOpening);
     }
 }

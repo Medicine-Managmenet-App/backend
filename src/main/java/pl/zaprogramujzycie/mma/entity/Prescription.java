@@ -16,31 +16,33 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "prescribed_medicines")
+@Table(name = "prescriptions")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class PrescribedMedicines {
+public class Prescription {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @OneToMany
     @JoinColumn(referencedColumnName = "id")
     private List<Medicine> medicines;
+    @OneToMany
+    @JoinColumn(referencedColumnName = "id")
+    private List<PrescribedMedicine> prescribedMedicines;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final PrescribedMedicines that = (PrescribedMedicines) o;
-        return Objects.equals(id, that.id) && Objects.equals(medicines, that.medicines);
+        final Prescription that = (Prescription) o;
+        return Objects.equals(id, that.id) && Objects.equals(medicines, that.medicines) && Objects.equals(prescribedMedicines, that.prescribedMedicines);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, medicines);
+        return Objects.hash(id, medicines, prescribedMedicines);
     }
 }
