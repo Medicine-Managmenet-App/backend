@@ -3,12 +3,23 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.zaprogramujzycie.mma.DTO.UserDTO;
-import pl.zaprogramujzycie.mma.services.UserService;
+import pl.zaprogramujzycie.mma.dto.request.UserRequest;
+import pl.zaprogramujzycie.mma.dto.response.UserResponse;
 
+import java.security.Principal;
 
 
 @RestController
@@ -16,12 +27,8 @@ import pl.zaprogramujzycie.mma.services.UserService;
 public class UserController {
 
 
-    private UserService service;
-
-
     @Operation(
-            operationId = "createUser",
-            description = "create new user",
+            description = "Create new user",
             tags = "Users"
     )
     @ApiResponses({
@@ -30,46 +37,57 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    ResponseEntity<Void> createUser(@RequestBody UserDTO newUserRequest, UriComponentsBuilder ucb) {
+    ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
         return null;
     }
 
     @Operation(
-            operationId = "getUserById",
-            description = "get user by Id",
-            tags = "User"
+            description = "Get user by Id",
+            tags = "Users"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User found", ref = "#/components/schemas/Users"),
+            @ApiResponse(responseCode = "200", description = "User found"),
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable long id) {
+    public ResponseEntity<UserResponse> findById(@PathVariable final long id) {
         return null;
     }
 
     @Operation(
-            operationId = "Update a User by Id",
-            description = "updateUser",
-            tags = "User"
+            description = "Update a user name by Id",
+            tags = "Users"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User updated successfully", ref = "#/components/schemas/User"),
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping("users/{id}")
-    private ResponseEntity<Void> updateUser(@PathVariable long id, @RequestBody UserDTO dto) {
+    @PatchMapping("/{name}")
+    private ResponseEntity<Void> updateUserName(@AuthenticationPrincipal final Principal principal, @PathVariable final String name) {
         return null;
     }
 
-    //ToDo create separate method for password update
     @Operation(
-            operationId = "Delete user by Id",
-            description = "deleteUser",
-            tags = "User"
+            description = "Update a user password by Id",
+            tags = "Users"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/{password}")
+    private ResponseEntity<Void> updateUserPassword(@AuthenticationPrincipal final Principal principal, @PathVariable final String password) {
+        return null;
+    }
+
+    @Operation(
+            description = "Delete user by Id",
+            tags = "Users"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "User deleted successfully"),
@@ -77,7 +95,8 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/{id}")
-    public static ResponseEntity<Long> deleteUser(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public static ResponseEntity<Void> deleteUser(@PathVariable final long id) {
         return null;
     }
 }

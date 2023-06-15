@@ -3,51 +3,42 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
-import pl.zaprogramujzycie.mma.DTO.MedicineDTO;
-import pl.zaprogramujzycie.mma.DTO.PrescribedMedicinesDTO;
-import pl.zaprogramujzycie.mma.entity.Medicine;
-import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
-import pl.zaprogramujzycie.mma.services.MedicineService;
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
+import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
+import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 
-@Tag(name ="Medicine", description = "Medicine management APIs")
+import java.util.List;
 @RestController
 @RequestMapping("/medicines")
 public class MedicineController {
 
-    private MedicineService service;
-
-    MedicineDTO dto;
-
     @Operation(
-            // operationId = "getMedicines",
-            summary = "get all medicines",
-            description = "returns all registered medicines",
+            description = "Returns all registered medicines",
             tags = "Medicines"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Medicine found", ref = "#/components/schemas/Medicine"),
+            @ApiResponse(responseCode = "200", description = "Medicine found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping
-    public ResponseEntity<List<MedicineDTO>> findAll(Pageable pageable) {
+    @GetMapping("/{page}/{size}/{sort}")
+    ResponseEntity<MedicinesResponse> findAll(@PathVariable final int page, @PathVariable final int size, @PathVariable final String sort) {
         return null;
     }
 
     @Operation(
-            operationId = "createMedicine",
-            description = "create a new medicine",
+            description = "Create a new medicine",
             tags = "Medicines"
     )
     @ApiResponses({
@@ -56,45 +47,43 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-     ResponseEntity<MedicineDTO> createMedicine(@RequestBody MedicineDTO newMedicineRequest) {
+    @ResponseStatus(HttpStatus.CREATED)
+    ResponseEntity<MedicineResponse> createMedicine(@RequestBody final MedicineRequest newMedicineRequest) {
         return null;
     }
 
     @Operation(
-            operationId = "getMedicineById",
-            description = "get medicine by Id",
-            tags = "Medicine"
+            description = "Get medicine by Id",
+            tags = "Medicines"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Medicine found", ref = "#/components/schemas/Medicine"),
+            @ApiResponse(responseCode = "200", description = "Medicine found"),
             @ApiResponse(responseCode = "404", description = "Medicine not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<MedicineDTO> findById(@PathVariable long id) {
+    ResponseEntity<MedicineResponse> findById(@PathVariable final long id) {
             return null;
     }
 
     @Operation(
-            operationId = "Update a medicine by Id",
-            description = "updateMedicine",
-            tags = "Medicine"
+            description = "Update a medicine by Id",
+            tags = "Medicines"
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "Medicine updated successfully", ref = "#/components/schemas/Medicine"),
+            @ApiResponse(responseCode = "200", description = "Medicine updated successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "404", description = "Medicine not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping("/{id}")
-    private ResponseEntity<MedicineDTO> updateMedicine(@PathVariable long id, @RequestBody MedicineDTO MedicineDto) {
+    ResponseEntity<MedicineResponse> updateMedicine(@PathVariable final long id, @RequestBody final MedicineRequest MedicineDto) {
         return null;
     }
 
     @Operation(
-            operationId = "Delete medicine by Id",
-            description = "deleteMedicine",
-            tags = "Medicine"
+            description = "Delete medicine by Id",
+            tags = "Medicines"
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Medicine deleted successfully"),
@@ -103,7 +92,8 @@ public class MedicineController {
     })
 
     @DeleteMapping("/{id}")
-    private ResponseEntity<String> deleteMedicine(@PathVariable long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    ResponseEntity<Void> deleteMedicine(@PathVariable final long id) {
         return null;
     }
 }
