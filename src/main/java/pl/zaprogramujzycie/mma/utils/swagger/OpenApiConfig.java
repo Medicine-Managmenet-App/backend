@@ -1,5 +1,6 @@
 package pl.zaprogramujzycie.mma.utils.swagger;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
@@ -22,6 +23,7 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI MedicineManagementAPI() {
+
         Server developmentServer = new Server();
         developmentServer.setUrl(developmentURL);
         developmentServer.setDescription("Server URL in development environment");
@@ -39,7 +41,7 @@ public class OpenApiConfig {
         Info info = new Info()
                 .title("Medicine Management API")
                 .description("The API for the Medicine Management App")
-                .version("1.0.0")
+                .version("0.0.1")
                 .license(license);
 
         return new OpenAPI().info(info).servers(List.of(developmentServer, productionServer));
