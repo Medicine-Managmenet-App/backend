@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Objects;
@@ -28,20 +29,19 @@ public class User {
     @Column(unique = true)
     private String login;
     private String password;
-    @OneToOne
-    @Column(nullable = false)
-    private FamilyMember member;
+    @ManyToOne
+    private Family family;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(member, user.member);
+        return Objects.equals(id, user.id) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(family, user.family);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, login, password, member);
+        return Objects.hash(id, login, password, family);
     }
 }
