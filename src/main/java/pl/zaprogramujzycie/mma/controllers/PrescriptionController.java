@@ -5,9 +5,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.PrescriptionRequest;
 import pl.zaprogramujzycie.mma.dto.response.PrescriptionResponse;
+
+import java.security.Principal;
 // import pl.zaprogramujzycie.mma.services.PrescriptionsService;
 
 
@@ -27,7 +30,7 @@ public class PrescriptionController {
     })
     @PostMapping("/{familyMemberId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PrescriptionResponse> createPrescription(@PathVariable final long familyMemberId, @RequestBody final PrescriptionRequest prescriptionRequest){
+    public ResponseEntity<PrescriptionResponse> createPrescription(@AuthenticationPrincipal final Principal principal, @PathVariable final long familyMemberId, @RequestBody final PrescriptionRequest prescriptionRequest){
         return null;
     }
 
@@ -41,7 +44,7 @@ public class PrescriptionController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<PrescriptionResponse> getPrescription(@PathVariable final long id) {
+    public ResponseEntity<PrescriptionResponse> getPrescription(@AuthenticationPrincipal final Principal principal, @PathVariable final long id) {
         return null;
     }
 
@@ -56,7 +59,7 @@ public class PrescriptionController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PatchMapping("/{id}")
-    public ResponseEntity<PrescriptionResponse> updatePrescriptions(@PathVariable final long id, @RequestBody final PrescriptionRequest prescriptionRequest){
+    public ResponseEntity<PrescriptionResponse> updatePrescriptions(@AuthenticationPrincipal final Principal principal, @PathVariable final long id, @RequestBody final PrescriptionRequest prescriptionRequest){
         return null;
     }
     @Operation(
@@ -70,7 +73,7 @@ public class PrescriptionController {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> deletePrescriptions(@PathVariable final long id){
+    public ResponseEntity<String> deletePrescriptions(@AuthenticationPrincipal final Principal principal, @PathVariable final long id){
         return null;
     }
 

@@ -4,7 +4,6 @@ public record UserResponse(
 
         long id,
         String login,
-        String password,
         Long familyId
 
 ) {
