@@ -20,7 +20,7 @@ import java.security.Principal;
 public class PrescriptionController {
 
     @Operation(
-            description = "Create new list of prescribed medicines, connect it with FamilyMember",
+            description = "Create new list of prescriptions, connect it with user",
             tags = "Prescriptions"
     )
     @ApiResponses({
@@ -28,9 +28,9 @@ public class PrescriptionController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PostMapping("/{familyMemberId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<PrescriptionResponse> createPrescription(@AuthenticationPrincipal final Principal principal, @PathVariable final long familyMemberId, @RequestBody final PrescriptionRequest prescriptionRequest){
+    public ResponseEntity<PrescriptionResponse> createPrescription(@AuthenticationPrincipal final Principal principal, @RequestBody final PrescriptionRequest prescriptionRequest){
         return null;
     }
 
