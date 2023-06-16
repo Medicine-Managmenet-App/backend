@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +32,7 @@ public class PrescribedMedicine {
     @JoinColumn(referencedColumnName = "id")
     private Medicine medicine;
     private double dosage;
+    @ElementCollection
     private List<OffsetDateTime> administrationTimes;
 
     @Override

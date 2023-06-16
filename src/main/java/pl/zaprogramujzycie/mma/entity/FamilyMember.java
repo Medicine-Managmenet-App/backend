@@ -33,7 +33,6 @@ public class FamilyMember {
     @OneToOne
     private Prescription prescription;
     @ManyToOne
-    @Column(nullable = false)
     private Family family;
 
     @Override
