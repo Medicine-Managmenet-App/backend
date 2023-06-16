@@ -24,7 +24,7 @@ import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
 import java.security.Principal;
 
 @RestController
-@RequestMapping("/prescribedPrescribedMedicines")
+@RequestMapping("/prescribedMedicines")
 public class PrescribedMedicinesController {
 
     @Operation(

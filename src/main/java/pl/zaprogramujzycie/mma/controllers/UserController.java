@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @Operation(
-            description = "Update a user name by Id",
+            description = "Update a user name",
             tags = "Users"
     )
     @ApiResponses({
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @Operation(
-            description = "Update a user password by Id",
+            description = "Update a user password",
             tags = "Users"
     )
     @ApiResponses({
