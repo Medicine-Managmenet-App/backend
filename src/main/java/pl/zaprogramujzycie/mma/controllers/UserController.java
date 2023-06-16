@@ -86,7 +86,7 @@ public class UserController {
     }
 
     @Operation(
-            description = "Delete user by Id",
+            description = "Delete account",
             tags = "Users"
     )
     @ApiResponses({
@@ -94,9 +94,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public static ResponseEntity<Void> deleteUser(@PathVariable final long id) {
+    public static ResponseEntity<Void> deleteUser(@AuthenticationPrincipal final Principal principal) {
         return null;
     }
 }
