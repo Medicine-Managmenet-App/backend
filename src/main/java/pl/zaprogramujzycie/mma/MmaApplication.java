@@ -2,9 +2,6 @@ package pl.zaprogramujzycie.mma;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import pl.zaprogramujzycie.mma.entity.FamilyMember;
 
 @SpringBootApplication
 public class MmaApplication {
