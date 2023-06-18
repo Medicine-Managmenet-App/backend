@@ -10,7 +10,9 @@ public record MedicineRequest(
         String name,
         @NotNull
         OffsetDateTime expirationDate,
-        int periodAfterOpening
+        int periodAfterOpening,
+
+        String owner
 
 ) {
 }

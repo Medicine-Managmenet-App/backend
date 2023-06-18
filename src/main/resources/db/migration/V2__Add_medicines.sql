@@ -1,0 +1,3 @@
+insert into medicines (id, name, expiration_date, period_after_opening, owner) values (100, 'med1', '2023-06-15 21:27:17.289601+02', 6, '100');
+insert into medicines (id, name, expiration_date, period_after_opening, owner) values (101, 'med2', '2023-06-15 21:27:17.289601+02', 6, '100');
+insert into medicines (id, name, expiration_date, period_after_opening, owner) values (102, 'med3', '2023-06-15 21:27:17.289601+02', 6, '101');

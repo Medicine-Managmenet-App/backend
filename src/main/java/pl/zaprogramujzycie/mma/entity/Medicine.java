@@ -32,6 +32,8 @@ public class Medicine {
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
 
+    String owner;
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
