@@ -15,5 +15,12 @@ public class ApplicationConfiguration {
         private String productionURL;
     }
 
+    @Data
+    public class Jwt {
+        private String signKey;
+        private long expiration;
+    }
+
     private OpenApi openApi = new OpenApi();
+    private Jwt jwt = new Jwt();
 }

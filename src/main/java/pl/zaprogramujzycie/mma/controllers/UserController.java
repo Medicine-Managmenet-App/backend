@@ -3,9 +3,12 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,14 +21,20 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.zaprogramujzycie.mma.dto.request.UserRequest;
 import pl.zaprogramujzycie.mma.dto.response.UserResponse;
+import pl.zaprogramujzycie.mma.entities.User;
+import pl.zaprogramujzycie.mma.repositories.UserRepository;
 
 import java.security.Principal;
 
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@Profile("prod")
 public class UserController {
 
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Operation(
             description = "Create new user",
@@ -38,6 +47,11 @@ public class UserController {
     })
     @PostMapping
     ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
+        //TODO: CHANGE IT WHEN SERVICE WAS CREATED
+        userRepository.save(User.builder()
+                .login("admin")
+                .password(passwordEncoder.encode("tajnedane123!"))
+                .build());
         return null;
     }
 
@@ -94,7 +108,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping()
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public static ResponseEntity<Void> deleteUser(@AuthenticationPrincipal final Principal principal) {
         return null;
