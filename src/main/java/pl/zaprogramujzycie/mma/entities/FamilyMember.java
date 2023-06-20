@@ -1,4 +1,4 @@
-package pl.zaprogramujzycie.mma.entity;
+package pl.zaprogramujzycie.mma.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,18 +10,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "medicines")
+@Table(name = "family_members")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Data
-public class Medicine {
+public class FamilyMember {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,19 +29,22 @@ public class Medicine {
     @Column(unique = true, nullable = false)
     private String name;
     @Column(nullable = false)
-    private OffsetDateTime expirationDate;
-    private int periodAfterOpening;
+    private boolean isChild;
+    @OneToOne
+    private Prescription prescription;
+    @ManyToOne
+    private Family family;
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Medicine medicine = (Medicine) o;
-        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate);
+        final FamilyMember that = (FamilyMember) o;
+        return isChild == that.isChild && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(prescription, that.prescription) && Objects.equals(family, that.family);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, expirationDate, periodAfterOpening);
+        return Objects.hash(id, name, isChild, prescription, family);
     }
 }

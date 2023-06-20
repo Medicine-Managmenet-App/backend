@@ -1,6 +1,6 @@
-package pl.zaprogramujzycie.mma.repository;
+package pl.zaprogramujzycie.mma.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pl.zaprogramujzycie.mma.entity.User;
+import pl.zaprogramujzycie.mma.entities.User;
 
 public interface UserRepository extends JpaRepository<User, Long> { }
