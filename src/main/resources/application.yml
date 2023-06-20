@@ -1,1 +1,4 @@
-
+pl.zaprogramujzycie.mma:
+  openApi:
+    developmentURL: http://localhost:8080
+    productionURL: http://localhost:8080

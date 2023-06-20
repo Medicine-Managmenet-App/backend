@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,23 +14,20 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class OpenApiConfig {
-    @Value("http://localhost:8080")
-    private String developmentURL;
 
-    //ToDo add production url
-    @Value("")
-    private String productionUrl;
+    private final ApplicationConfiguration configuration;
 
     @Bean
     public OpenAPI MedicineManagementAPI() {
 
         Server developmentServer = new Server();
-        developmentServer.setUrl(developmentURL);
+        developmentServer.setUrl(configuration.getOpenApi().getDevelopmentURL());
         developmentServer.setDescription("Server URL in development environment");
 
         Server productionServer = new Server();
-        productionServer.setUrl(productionUrl);
+        productionServer.setUrl(configuration.getOpenApi().getProductionURL());
         productionServer.setDescription("Server URL in production environment");
 
         Contact contact = new Contact();
