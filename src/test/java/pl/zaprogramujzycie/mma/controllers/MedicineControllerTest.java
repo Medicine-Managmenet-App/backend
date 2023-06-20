@@ -7,23 +7,15 @@ import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
-import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
-import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -33,24 +25,6 @@ public class MedicineControllerTest {
 
     @Autowired
     TestRestTemplate restTemplate;
-
-
-    private MedicineResponse medicineDTO;
-
-    private List<MedicineResponse> medicineDTOs = new ArrayList<>();
-
-
-    @BeforeEach
-    public void setup()
-    {
-        var medDTO1 = new MedicineResponse(100L, "Med1", OffsetDateTime.parse("2023-06-15T21:27:17.289601+02"), 6, "100");
-        var medDTO2 = new MedicineResponse(101L, "Med2", OffsetDateTime.parse("2023-06-15T21:27:17.289601+02"), 6, "100");
-        var medDTO3 = new MedicineResponse(102L, "Med3", OffsetDateTime.parse("2023-06-15T21:27:17.289601+02"), 6, "100");
-        this.medicineDTO = medDTO1;
-        medicineDTOs.add(medDTO1);
-        medicineDTOs.add(medDTO2);
-        medicineDTOs.add(medDTO3);
-    }
 
     @BeforeEach
     void clearDatabase(@Autowired Flyway flyway) {
@@ -76,7 +50,7 @@ public class MedicineControllerTest {
     @Test
     @DirtiesContext
     void shouldCreateANewMedicine() {
-        MedicineResponse newMedicine = new MedicineResponse(100L, "med1",  OffsetDateTime.parse("2023-06-15T21:27:17.289601+02"), 6, "100");
+        MedicineRequest newMedicine = new MedicineRequest( "med1",  OffsetDateTime.parse("2023-06-15T21:27:17.289601+02"), 6, "100");
         ResponseEntity<Void> createResponse = restTemplate.withBasicAuth("100", "abc123")
                 .postForEntity("/medicines", newMedicine, Void.class);
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -151,7 +125,7 @@ public class MedicineControllerTest {
 
         ResponseEntity<String> getResponse = restTemplate
                 .withBasicAuth("100", "abc123")
-                .getForEntity("/medicines/1", String.class);
+                .getForEntity("/medicines/100", String.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -210,19 +184,15 @@ public class MedicineControllerTest {
     void shouldUpdateAnExistingMedicine() {
         MedicineRequest medicineUpdate = new MedicineRequest("newName",null, 0, "100");
         HttpEntity<MedicineRequest> request = new HttpEntity<>(medicineUpdate);
-        System.out.println("------checkpoint-------1---------");
         ResponseEntity<Void> response = restTemplate
                 .withBasicAuth("100", "abc123")
                 .exchange("/medicines/100", HttpMethod.PUT, request, Void.class);
-        System.out.println("------checkpoint-------2---------");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        System.out.println("------checkpoint-------3---------");
         ResponseEntity<String> getResponse = restTemplate
                 .withBasicAuth("100", "abc123")
                 .getForEntity("/medicines/100", String.class);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        System.out.println("------checkpoint-------4---------");
         DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
         Number id = documentContext.read("$.id");
         String name = documentContext.read("$.name");

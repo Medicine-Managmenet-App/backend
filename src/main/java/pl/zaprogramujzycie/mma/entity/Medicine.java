@@ -12,7 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -32,7 +31,7 @@ public class Medicine {
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
 
-    String owner;
+    private String owner;
 
     @Override
     public boolean equals(final Object o) {

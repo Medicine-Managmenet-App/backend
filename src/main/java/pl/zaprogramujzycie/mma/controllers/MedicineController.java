@@ -3,14 +3,9 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
@@ -19,13 +14,16 @@ import pl.zaprogramujzycie.mma.services.MedicineService;
 
 import java.net.URI;
 import java.security.Principal;
-import java.util.List;
+
 @RestController
 @RequestMapping("/medicines")
 public class MedicineController {
 
-    @Autowired
-    MedicineService service;
+    final MedicineService service;
+
+    public MedicineController(MedicineService service) {
+        this.service = service;
+    }
 
     @Operation(
             description = "Returns all registered medicines for user",
@@ -53,7 +51,8 @@ public class MedicineController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest) {
-        return service.save(newMedicineRequest);
+        MedicineResponse response = service.save(newMedicineRequest);
+        return ResponseEntity.created(URI.create("/medicines/" + response.id())).body(response);
     }
 
     @Operation(
@@ -67,7 +66,12 @@ public class MedicineController {
     })
     @GetMapping("/{id}")
     ResponseEntity<MedicineResponse> findById(final Principal principal, @PathVariable final long id) {
-        return service.findById(id, principal);
+        MedicineResponse response = service.findById(id, principal);
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(
@@ -82,7 +86,12 @@ public class MedicineController {
     })
     @PutMapping("/{id}")
     ResponseEntity<MedicineResponse> updateMedicine(final Principal principal, @PathVariable final long id, @RequestBody final MedicineRequest request) {
-        return service.partialUpdate(id, request, principal);
+        MedicineResponse response = service.partialUpdate(id, request, principal);
+        if (response != null) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Operation(
@@ -98,6 +107,10 @@ public class MedicineController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ResponseEntity<Void> deleteMedicine( final Principal principal, @PathVariable final long id) {
-        return service.deleteById(id, principal);
+        if (service.deleteById(id, principal)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
+
 }
