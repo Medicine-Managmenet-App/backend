@@ -5,16 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import java.time.OffsetDateTime;
-import java.util.List;
+import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.Objects;
 
 @Entity
@@ -32,19 +24,20 @@ public class PrescribedMedicine {
     @JoinColumn(referencedColumnName = "id")
     private Medicine medicine;
     private double dosage;
-    @ElementCollection
-    private List<OffsetDateTime> administrationTimes;
+    private LocalTime firstDose;
+    private int dosageInterval;
+    private String owner;
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final PrescribedMedicine that = (PrescribedMedicine) o;
-        return Double.compare(that.dosage, dosage) == 0 && Objects.equals(id, that.id) && Objects.equals(medicine, that.medicine) && Objects.equals(administrationTimes, that.administrationTimes);
+        return Double.compare(that.dosage, dosage) == 0 && dosageInterval == that.dosageInterval && Objects.equals(id, that.id) && Objects.equals(medicine, that.medicine) && Objects.equals(firstDose, that.firstDose) && Objects.equals(owner, that.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, medicine, dosage, administrationTimes);
+        return Objects.hash(id, medicine, dosage, firstDose, dosageInterval, owner);
     }
 }
