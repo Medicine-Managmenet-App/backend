@@ -34,15 +34,15 @@ public class Medicine {
     private String owner;
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Medicine medicine = (Medicine) o;
-        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate);
+        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(owner, medicine.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, expirationDate, periodAfterOpening);
+        return Objects.hash(id, name, expirationDate, periodAfterOpening, owner);
     }
 }
