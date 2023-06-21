@@ -3,6 +3,8 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,6 @@ import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.services.MedicineService;
-
 import java.net.URI;
 import java.security.Principal;
 
@@ -21,9 +22,11 @@ public class MedicineController {
 
     final MedicineService service;
 
-    public MedicineController(MedicineService service) {
+    public MedicineController(final MedicineService service) {
         this.service = service;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(MedicineController.class);
 
     @Operation(
             description = "Returns all registered medicines for user",
@@ -34,7 +37,7 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    ResponseEntity<MedicinesResponse> findAll(Pageable pageable, final Principal principal) {
+    ResponseEntity<MedicinesResponse> findAll(final Pageable pageable, final Principal principal) {
         return ResponseEntity.ok(service.findAll(principal, pageable));
     }
 
@@ -51,7 +54,7 @@ public class MedicineController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest) {
-        MedicineResponse response = service.save(newMedicineRequest);
+        MedicineResponse response = service.save(newMedicineRequest, principal);
         return ResponseEntity.created(URI.create("/medicines/" + response.id())).body(response);
     }
 
@@ -66,12 +69,7 @@ public class MedicineController {
     })
     @GetMapping("/{id}")
     ResponseEntity<MedicineResponse> findById(final Principal principal, @PathVariable final long id) {
-        MedicineResponse response = service.findById(id, principal);
-        if (response != null) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(service.findById(id, principal));
     }
 
     @Operation(
@@ -86,12 +84,8 @@ public class MedicineController {
     })
     @PutMapping("/{id}")
     ResponseEntity<MedicineResponse> updateMedicine(final Principal principal, @PathVariable final long id, @RequestBody final MedicineRequest request) {
-        MedicineResponse response = service.partialUpdate(id, request, principal);
-        if (response != null) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        service.partialUpdate(id, request, principal);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -106,11 +100,9 @@ public class MedicineController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> deleteMedicine( final Principal principal, @PathVariable final long id) {
-        if (service.deleteById(id, principal)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    ResponseEntity<Void> deleteMedicine( final Principal principal, @PathVariable final long id) throws Exception{
+        service.deleteById(id, principal);
+        return ResponseEntity.noContent().build();
     }
 
 }

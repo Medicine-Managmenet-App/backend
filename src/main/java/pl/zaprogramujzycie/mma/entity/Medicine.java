@@ -30,8 +30,7 @@ public class Medicine {
     @Column(nullable = false)
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
-
-    private String owner;
+    private Long owner;
 
     @Override
     public boolean equals(Object o) {

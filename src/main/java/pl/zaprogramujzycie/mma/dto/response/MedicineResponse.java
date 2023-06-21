@@ -8,6 +8,6 @@ public record MedicineResponse(
         String name,
         OffsetDateTime expirationDate,
         int periodAfterOpening,
-        String owner
+        long owner
 ) {
 }

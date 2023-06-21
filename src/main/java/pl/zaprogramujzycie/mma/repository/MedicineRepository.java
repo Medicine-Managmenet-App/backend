@@ -7,9 +7,10 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.zaprogramujzycie.mma.entity.Medicine;
 
+import java.util.Optional;
+
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long>, PagingAndSortingRepository<Medicine, Long> {
-    Medicine findByIdAndOwner(long id, String owner);
-    Page<Medicine> findByOwner(String owner, PageRequest page);
-    boolean existsByIdAndOwner(Long id, String owner);
+    Optional<Medicine> findByIdAndOwner(long id, Long owner);
+    Page<Medicine> findByOwner(Long owner, PageRequest page);
 }

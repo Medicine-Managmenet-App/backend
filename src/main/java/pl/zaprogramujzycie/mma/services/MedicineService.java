@@ -1,79 +1,88 @@
 package pl.zaprogramujzycie.mma.services;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.entity.Medicine;
 import pl.zaprogramujzycie.mma.repository.MedicineRepository;
+import pl.zaprogramujzycie.mma.utils.OwnerAssigner;
 import pl.zaprogramujzycie.mma.utils.mappers.MedicineMapper;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Service
 public class MedicineService {
 
     private final MedicineRepository repository;
 
-    private MedicineMapper mapper;
-
     public MedicineService(MedicineRepository repository) {
         this.repository = repository;
     }
-    //ToDo add logic of assigning owner form Family id
-    public MedicineResponse save(MedicineRequest request) {
-        MedicineResponse response = MedicineMapper.mapToMedicineDTO(repository.save(MedicineMapper.mapToMedicine(request)));
-        return response;
+
+    private final Logger logger = LoggerFactory.getLogger(MedicineService.class);
+
+    public MedicineResponse save(final MedicineRequest request, final Principal principal) {
+        Medicine newMedicine = MedicineMapper.mapToMedicine(request);
+        newMedicine.setOwner(OwnerAssigner.assignFamilyAsOwner(principal));
+        return MedicineMapper.mapToMedicineDTO(repository.save(newMedicine));
     }
 
-    public MedicineResponse findById(long id, Principal principal){
-        Medicine response = findEntity(id, principal);
-        if (response != null) {
-            return MedicineMapper.mapToMedicineDTO(response);
-        } else {
-            return null;
-        }
+    public MedicineResponse findById(final long id, final Principal principal) throws NotFoundException {
+        Optional<Medicine> response = findEntity(id, principal);
+        Medicine medicine = response.orElseThrow(() -> new NotFoundException("Medicine not found"));
+        return MedicineMapper.mapToMedicineDTO(medicine);
     }
 
-    public MedicinesResponse findAll(Principal principal, Pageable pageable){
-        Page<Medicine> medicine = repository.findByOwner(principal.getName(), PageRequest.of(
+    public MedicinesResponse findAll(final Principal principal, final Pageable pageable) {
+        Page<Medicine> medicine = repository.findByOwner(OwnerAssigner.assignFamilyAsOwner(principal), PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"))));
         Page<MedicineResponse> page = MedicineMapper.mapToResponsePage(medicine);
-        MedicinesResponse response = new MedicinesResponse(page.getContent());
-       return response;
+        return new MedicinesResponse(page.getContent());
     }
 
-//ToDo if(PAO != 0) change expiration Date to (request timestamp + PAO)
-    public MedicineResponse partialUpdate(long id, MedicineRequest request, Principal principal) {
-        Medicine updatedMedicine = findEntity(id, principal);
-        if (updatedMedicine != null) {
-            if (request.name() != null){updatedMedicine.setName(request.name());}
-            if (request.expirationDate() != null){updatedMedicine.setExpirationDate(request.expirationDate());}
-            if (request.periodAfterOpening() != 0){updatedMedicine.setPeriodAfterOpening(request.periodAfterOpening());}
-            repository.save(updatedMedicine);
-            return MedicineMapper.mapToMedicineDTO(updatedMedicine);
+    // ToDo if(PAO != 0) change expiration Date to (request timestamp + PAO)
+    @Transactional
+    public void partialUpdate(final long id, final MedicineRequest request, final Principal principal) {
+        Optional<Medicine> response = findEntity(id, principal);
+        Medicine updatedMedicine = response.orElseThrow(() -> new NotFoundException("Medicine not found"));
+        if (request.name() != null) {
+            updatedMedicine.setName(request.name());
         }
-        return null;
-    }
-
-    private Medicine findEntity(long id, Principal principal){
-        return repository.findByIdAndOwner(id, principal.getName());
-    }
-//ToDo create logic that takes care of error while deleting medicine connected to prescribed medicine
-    public boolean deleteById(long id, Principal principal){
-        if (repository.existsByIdAndOwner(id, principal.getName())) {
-            repository.deleteById(id);
-            return true;
+        if (request.expirationDate() != null) {
+            updatedMedicine.setExpirationDate(request.expirationDate());
         }
-        return false;
+        if (request.periodAfterOpening() != 0) {
+            updatedMedicine.setPeriodAfterOpening(request.periodAfterOpening());
+        }
+        repository.save(updatedMedicine);
     }
 
+    private Optional<Medicine> findEntity(final long id, final Principal principal) {
+        return repository.findByIdAndOwner(id, OwnerAssigner.assignFamilyAsOwner(principal));
+    }
 
+    public void deleteById(final long id, final Principal principal) {
+        Optional<Medicine> response = findEntity(id, principal);
+        Medicine deletedMedicine = response.orElseThrow(() -> new NotFoundException("Medicine not found"));
+        try {
+            repository.deleteById(deletedMedicine.getId());
+        } catch (DataIntegrityViolationException ic) {
+            throw new DataIntegrityViolationException("Medicine connected to other object/objects");
+        }
+    }
 }

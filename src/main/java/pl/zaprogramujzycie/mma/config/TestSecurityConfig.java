@@ -14,11 +14,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-// @EnableGlobalMethodSecurity(
-//         securedEnabled = true
-// )
 @EnableWebSecurity
-// @Profile("test")
+@Profile("test")
 public class TestSecurityConfig {
 
     @Bean
