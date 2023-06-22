@@ -1,8 +1,5 @@
 package pl.zaprogramujzycie.mma.controllers;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
-import net.minidev.json.JSONArray;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -18,10 +15,7 @@ import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -148,7 +142,7 @@ public class MedicineControllerTest {
         assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Disabled("TODO: Check this test after implementing whole loggic behind OwnerAssigner")
+    @Disabled("TODO: Check this test after implementing whole logic behind OwnerAssigner")
     @Test
     void shouldNotAllowDeletionOfMedicineTheyDoNotOwn() {
         ResponseEntity<Void> deleteResponse = restTemplate

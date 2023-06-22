@@ -4,7 +4,6 @@ import org.mapstruct.Mapper;
 import org.springframework.data.domain.Page;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
-import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.entities.Medicine;
 
 import java.util.List;

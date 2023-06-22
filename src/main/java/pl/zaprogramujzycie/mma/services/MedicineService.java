@@ -30,7 +30,7 @@ public class MedicineService {
 
     private final MedicineRepository repository;
 
-    private MedicineMapper mapper
+    private final MedicineMapper mapper
             = Mappers.getMapper(MedicineMapper.class);
 
     public MedicineService(MedicineRepository repository) {
