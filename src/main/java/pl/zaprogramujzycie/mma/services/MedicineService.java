@@ -1,28 +1,27 @@
 package pl.zaprogramujzycie.mma.services;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
-import pl.zaprogramujzycie.mma.entity.Medicine;
-import pl.zaprogramujzycie.mma.repository.MedicineRepository;
+import pl.zaprogramujzycie.mma.entities.Medicine;
+import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
 import pl.zaprogramujzycie.mma.utils.OwnerAssigner;
 import pl.zaprogramujzycie.mma.utils.mappers.MedicineMapper;
-
 import java.security.Principal;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class MedicineService {
 
@@ -31,8 +30,6 @@ public class MedicineService {
     public MedicineService(MedicineRepository repository) {
         this.repository = repository;
     }
-
-    private final Logger logger = LoggerFactory.getLogger(MedicineService.class);
 
     public MedicineResponse save(final MedicineRequest request, final Principal principal) {
         Medicine newMedicine = MedicineMapper.mapToMedicine(request);

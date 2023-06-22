@@ -1,5 +1,6 @@
 package pl.zaprogramujzycie.mma.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import pl.zaprogramujzycie.mma.utils.exceptions.ErrorMessage;
 
 import java.util.Date;
 
-
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 

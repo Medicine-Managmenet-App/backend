@@ -1,4 +1,4 @@
-package pl.zaprogramujzycie.mma.entity;
+package pl.zaprogramujzycie.mma.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -3,6 +3,7 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import pl.zaprogramujzycie.mma.services.MedicineService;
 import java.net.URI;
 import java.security.Principal;
 
+@Slf4j
 @RestController
 @RequestMapping("/medicines")
 public class MedicineController {
@@ -25,8 +27,6 @@ public class MedicineController {
     public MedicineController(final MedicineService service) {
         this.service = service;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(MedicineController.class);
 
     @Operation(
             description = "Returns all registered medicines for user",

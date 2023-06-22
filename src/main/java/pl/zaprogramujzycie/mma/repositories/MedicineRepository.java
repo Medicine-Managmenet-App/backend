@@ -1,11 +1,13 @@
-package pl.zaprogramujzycie.mma.repository;
+package pl.zaprogramujzycie.mma.repositories;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
-import pl.zaprogramujzycie.mma.entity.Medicine;
+import pl.zaprogramujzycie.mma.entities.Medicine;
+
 
 import java.util.Optional;
 
