@@ -11,7 +11,7 @@ public record MedicineRequest(
         @NotNull
         OffsetDateTime expirationDate,
         int periodAfterOpening,
-        long owner
+        long familyId
 
 ) {
 }

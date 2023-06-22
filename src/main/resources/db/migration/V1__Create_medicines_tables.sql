@@ -3,7 +3,7 @@
     name VARCHAR(255) NOT NULL,
     expiration_date TIMESTAMP with time zone NOT NULL,
     period_after_opening INT NOT NULL,
-    owner BIGINT NOT NULL,
+    family_id BIGINT NOT NULL,
     CONSTRAINT pk_medicines PRIMARY KEY (id)
  );
 
@@ -13,7 +13,7 @@
     dosage DOUBLE PRECISION,
     first_dose TIME,
     dosage_interval INTEGER,
-    owner VARCHAR(256) NOT NULL,
+    family_id VARCHAR(256) NOT NULL,
     CONSTRAINT pk_prescribed_medicines PRIMARY KEY (id)
  );
 

@@ -1,5 +1,5 @@
 [
-  {"id": 100, "name": "med1", "expirationDate": "2023-06-15T19:27:17.289601Z", "periodAfterOpening":  6, "owner":  100},
-  {"id": 101, "name": "med2","expirationDate": "2023-06-15T19:27:17.289601Z", "periodAfterOpening":  6, "owner":  100},
-  {"id": 102, "name": "med3","expirationDate": "2023-06-15T19:27:17.289601Z", "periodAfterOpening":  6, "owner":  100}
+  {"id": 100, "name": "med1", "expirationDate": "2023-06-15T19:27:17.289601Z", "periodAfterOpening":  6, "familyId":  100},
+  {"id": 101, "name": "med2","expirationDate": "2023-06-15T19:27:17.289601Z", "periodAfterOpening":  6, "familyId":  100},
+  {"id": 102, "name": "med3","expirationDate": "2023-06-15T19:27:17.289601Z", "periodAfterOpening":  6, "familyId":  100}
 ]

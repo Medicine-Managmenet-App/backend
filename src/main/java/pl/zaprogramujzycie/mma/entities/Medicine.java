@@ -30,18 +30,18 @@ public class Medicine {
     @Column(nullable = false)
     private OffsetDateTime expirationDate;
     private int periodAfterOpening;
-    private Long owner;
+    private Long familyId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Medicine medicine = (Medicine) o;
-        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(owner, medicine.owner);
+        return periodAfterOpening == medicine.periodAfterOpening && Objects.equals(id, medicine.id) && Objects.equals(name, medicine.name) && Objects.equals(expirationDate, medicine.expirationDate) && Objects.equals(familyId, medicine.familyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, expirationDate, periodAfterOpening, owner);
+        return Objects.hash(id, name, expirationDate, periodAfterOpening, familyId);
     }
 }

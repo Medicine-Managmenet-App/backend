@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import java.security.Principal;
 @RequestMapping("/medicines")
 public class MedicineController {
 
-    final MedicineService service;
+    private final MedicineService service;
 
     public MedicineController(final MedicineService service) {
         this.service = service;
@@ -68,7 +69,7 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    ResponseEntity<MedicineResponse> findById(final Principal principal, @PathVariable final long id) {
+    ResponseEntity<MedicineResponse> findById(final Principal principal, @PathVariable final long id) throws ChangeSetPersister.NotFoundException {
         return ResponseEntity.ok(service.findById(id, principal));
     }
 
@@ -83,7 +84,7 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/{id}")
-    ResponseEntity<MedicineResponse> updateMedicine(final Principal principal, @PathVariable final long id, @RequestBody final MedicineRequest request) {
+    ResponseEntity<MedicineResponse> updateMedicine(final Principal principal, @PathVariable final long id, @RequestBody final MedicineRequest request) throws ChangeSetPersister.NotFoundException {
         service.partialUpdate(id, request, principal);
         return ResponseEntity.noContent().build();
     }

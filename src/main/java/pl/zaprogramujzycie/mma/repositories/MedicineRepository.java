@@ -1,6 +1,5 @@
 package pl.zaprogramujzycie.mma.repositories;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long>, PagingAndSortingRepository<Medicine, Long> {
-    Optional<Medicine> findByIdAndOwner(long id, Long owner);
-    Page<Medicine> findByOwner(Long owner, PageRequest page);
+    Optional<Medicine> findByIdAndFamilyId(final long id, final Long familyId);
+    Page<Medicine> findByFamilyId(final Long familyId, final PageRequest page);
 }
