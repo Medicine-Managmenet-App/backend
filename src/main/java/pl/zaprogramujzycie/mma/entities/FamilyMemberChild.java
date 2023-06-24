@@ -1,15 +1,18 @@
-package pl.zaprogramujzycie.mma.entity;
+package pl.zaprogramujzycie.mma.entities;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @Data
+@Table(name = "family_members_child")
 public class FamilyMemberChild extends FamilyMember {
 
+    @Column
     private int age;
+    @Column
     private float weight;
 
     @Override

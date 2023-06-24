@@ -5,13 +5,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
+import pl.zaprogramujzycie.mma.entities.Family;
 import pl.zaprogramujzycie.mma.entities.Medicine;
+
 
 
 import java.util.Optional;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long>, PagingAndSortingRepository<Medicine, Long> {
-    Optional<Medicine> findByIdAndFamilyId(final long id, final Long familyId);
-    Page<Medicine> findByFamilyId(final Long familyId, final PageRequest page);
+    Optional<Medicine> findByIdAndFamily(final long id, final Family family);
+    Page<Medicine> findByFamily(final Family family, final PageRequest page);
 }

@@ -1,19 +1,11 @@
-package pl.zaprogramujzycie.mma.entity;
+package pl.zaprogramujzycie.mma.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.zaprogramujzycie.mma.entities.Medicine;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -33,19 +25,26 @@ public class PrescribedMedicine {
     @JoinColumn(referencedColumnName = "id")
     private Medicine medicine;
     private double dosage;
+
+    private int numberOfDoses;
+    private int dosageInterval;
     @ElementCollection
     private List<OffsetDateTime> administrationTimes;
 
+    @ManyToOne
+    @JoinColumn(name = "prescription_id")
+    private Prescription prescription;
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final PrescribedMedicine that = (PrescribedMedicine) o;
-        return Double.compare(that.dosage, dosage) == 0 && Objects.equals(id, that.id) && Objects.equals(medicine, that.medicine) && Objects.equals(administrationTimes, that.administrationTimes);
+        return Double.compare(that.dosage, dosage) == 0 && numberOfDoses == that.numberOfDoses && dosageInterval == that.dosageInterval && Objects.equals(id, that.id) && Objects.equals(medicine, that.medicine) && Objects.equals(administrationTimes, that.administrationTimes) && Objects.equals(prescription, that.prescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, medicine, dosage, administrationTimes);
+        return Objects.hash(id, medicine, dosage, numberOfDoses, dosageInterval, administrationTimes, prescription);
     }
 }

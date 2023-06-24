@@ -1,18 +1,11 @@
-package pl.zaprogramujzycie.mma.entity;
+package pl.zaprogramujzycie.mma.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -29,11 +22,16 @@ public class User {
     @Column(unique = true)
     private String login;
     private String password;
-    @ManyToOne
+    @JoinColumn(name = "family_id", insertable = false, updatable = false)
+    @ManyToOne(targetEntity = Family.class, fetch = FetchType.LAZY)
     private Family family;
 
+    @Column(name = "family_id")
+    private long familyId;
+
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final User user = (User) o;
