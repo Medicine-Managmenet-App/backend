@@ -22,7 +22,6 @@
   );
 
 ALTER TABLE prescribed_medicines ADD CONSTRAINT FK_PRESCRIBED_MEDICINES_ON_MEDICINE FOREIGN KEY (medicine_id) REFERENCES medicines (id);
-
 ALTER TABLE prescribed_medicine_administration_times ADD CONSTRAINT FK_HOURS_MEDICINES_ON_PRESCRIBED_MEDICINES FOREIGN KEY (prescribed_medicine_id) REFERENCES prescribed_medicines (id);
 
 
