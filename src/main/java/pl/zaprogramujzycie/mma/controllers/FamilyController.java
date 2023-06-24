@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import pl.zaprogramujzycie.mma.dto.request.FamilyMemberRequest;
 import pl.zaprogramujzycie.mma.dto.request.FamilyRequest;
-import pl.zaprogramujzycie.mma.dto.response.FamilyMemberResponse;
 import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 
 @RestController
@@ -34,6 +32,8 @@ public class FamilyController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+
+    //ToDo we don't need create endpoint, creation of the family goes only in the background
     ResponseEntity<FamilyResponse> createFamily(@RequestBody final FamilyRequest newFamilyRequest) {
         return null;
     }

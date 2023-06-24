@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.services.MedicineService;
 import java.net.URI;
 import java.security.Principal;
@@ -20,7 +21,6 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/medicines")
 public class MedicineController {
-
     private final MedicineService service;
 
     public MedicineController(final MedicineService service) {
@@ -36,7 +36,7 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    ResponseEntity<MedicinesResponse> findAll(final Pageable pageable, final Principal principal) {
+    ResponseEntity<MedicinesResponse> findAll(final Pageable pageable, final Principal principal) throws NotFoundException {
         return ResponseEntity.ok(service.findAll(principal, pageable));
     }
 
@@ -52,7 +52,7 @@ public class MedicineController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest) {
+    ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest) throws NotFoundException {
         MedicineResponse response = service.save(newMedicineRequest, principal);
         return ResponseEntity.created(URI.create("/medicines/" + response.id())).body(response);
     }

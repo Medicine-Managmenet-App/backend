@@ -13,12 +13,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
+import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
-import pl.zaprogramujzycie.mma.utils.OwnerAssigner;
+import pl.zaprogramujzycie.mma.utils.FamilyAssigner;
+import pl.zaprogramujzycie.mma.utils.mappers.FamilyMapper;
 import pl.zaprogramujzycie.mma.utils.mappers.MedicineMapper;
 
 import java.security.Principal;
@@ -29,34 +31,36 @@ import java.util.Optional;
 public class MedicineService {
 
     private final MedicineRepository repository;
-
+    private final FamilyAssigner assigner;
     private final MedicineMapper mapper
             = Mappers.getMapper(MedicineMapper.class);
+    private final FamilyMapper familyMapper
+            = Mappers.getMapper(FamilyMapper.class);
 
-    public MedicineService(MedicineRepository repository) {
+    public MedicineService(MedicineRepository repository, FamilyAssigner assigner) {
+        this.assigner = assigner;
         this.repository = repository;
     }
 
     @Transactional
-    public MedicineResponse save(final MedicineRequest request, final Principal principal) {
+    public MedicineResponse save(final MedicineRequest request, final Principal principal) throws NotFoundException {
         Medicine newMedicine = mapper.mapToEntity(request);
-        newMedicine.setFamilyId(OwnerAssigner.assignFamilyAsOwner(principal));
+        FamilyResponse familyResponse = assigner.assignFamilyAsOwner(principal);
+        newMedicine.setFamily(familyMapper.mapResponseToEntity(familyResponse));
         return mapper.mapToResponse(repository.save(newMedicine));
     }
 
-    public MedicineResponse findById(final long id, final Principal principal) throws ChangeSetPersister.NotFoundException {
+    public MedicineResponse findById(final long id, final Principal principal) throws NotFoundException {
         Medicine response = findEntity(id, principal);
         return mapper.mapToResponse(response);
     }
 
-    public MedicinesResponse findAll(final Principal principal, final Pageable pageable) {
-        Page<Medicine> medicine = repository.findByFamilyId(OwnerAssigner.assignFamilyAsOwner(principal), PageRequest.of(
+    public MedicinesResponse findAll(final Principal principal, final Pageable pageable) throws NotFoundException {
+        FamilyResponse familyResponse = assigner.assignFamilyAsOwner(principal);
+        Page<Medicine> medicine = repository.findByFamily(familyMapper.mapResponseToEntity(familyResponse), PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"))));
-        for(Medicine m : medicine){
-            System.out.println(m);
-        }
         return new MedicinesResponse(mapper.mapToList(medicine));
     }
 
@@ -75,12 +79,13 @@ public class MedicineService {
         }
     }
 
-    private Medicine findEntity(final long id, final Principal principal) throws ChangeSetPersister.NotFoundException {
-        Optional<Medicine> response = repository.findByIdAndFamilyId(id, OwnerAssigner.assignFamilyAsOwner(principal));
+    private Medicine findEntity(final long id, final Principal principal) throws NotFoundException {
+        FamilyResponse familyResponse = assigner.assignFamilyAsOwner(principal);
+        Optional<Medicine> response = repository.findByIdAndFamily(id, familyMapper.mapResponseToEntity(familyResponse));
         return response.orElseThrow(NotFoundException:: new);
     }
 
-    public void deleteById(final long id, final Principal principal) throws ChangeSetPersister.NotFoundException {
+    public void deleteById(final long id, final Principal principal) throws NotFoundException {
         Medicine response = findEntity(id, principal);
         try {
             repository.deleteById(response.getId());

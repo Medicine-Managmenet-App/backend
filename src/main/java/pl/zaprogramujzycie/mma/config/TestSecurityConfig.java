@@ -22,19 +22,15 @@ public class TestSecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         return http.authorizeHttpRequests()
-                .antMatchers("/medicines/**")
+                .mvcMatchers("/medicines/**")
                 .hasRole("MEDICINE-OWNER")
                 .and()
+                .antMatcher("/users/**")
                 .csrf().disable()
-                .httpBasic()
-                .and().build();
+                .httpBasic().disable()
+                .build();
     }
 
-
-
-    // private static void customizeSecurity(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
-    //     authorizationManagerRequestMatcherRegistry.anyRequest().permitAll();
-    // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,21 +40,26 @@ public class TestSecurityConfig {
     @Bean
     public UserDetailsService testOnlyUsers(PasswordEncoder passwordEncoder) {
         User.UserBuilder users = User.builder();
-        UserDetails hundred = users
-                .username("100")
-                .password(passwordEncoder.encode("abc123"))
+        UserDetails user = users
+                .username("login")
+                .password(passwordEncoder.encode("password"))
                 .roles("MEDICINE-OWNER")
                 .build();
-        UserDetails noMedicine = users
-                .username("no-medicine")
-                .password(passwordEncoder.encode("qrs456"))
+        UserDetails user1 = users
+                .username("login1")
+                .password(passwordEncoder.encode("password1"))
                 .roles("NON-OWNER")
                 .build();
-        UserDetails hundred1 = users
-                .username("101")
-                .password(passwordEncoder.encode("xyz789"))
+        UserDetails user2 = users
+                .username("login2")
+                .password(passwordEncoder.encode("password2"))
                 .roles("MEDICINE-OWNER")
                 .build();
-        return new InMemoryUserDetailsManager(hundred, noMedicine, hundred1);
+        UserDetails user3 = users
+                .username("login3")
+                .password(passwordEncoder.encode("password3"))
+                .roles("MEDICINE-OWNER")
+                .build();
+        return new InMemoryUserDetailsManager(user, user1, user2, user3);
     }
 }
