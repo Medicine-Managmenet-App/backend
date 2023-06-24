@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.entities.PrescribedMedicine;
 
 import javax.persistence.*;

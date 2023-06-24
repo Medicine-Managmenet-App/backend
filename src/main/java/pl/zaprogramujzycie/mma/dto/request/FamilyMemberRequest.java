@@ -1,7 +1,5 @@
 package pl.zaprogramujzycie.mma.dto.request;
 
-import pl.zaprogramujzycie.mma.dto.response.PrescriptionResponse;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
