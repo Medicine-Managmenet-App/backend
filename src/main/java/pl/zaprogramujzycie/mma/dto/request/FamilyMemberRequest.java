@@ -11,7 +11,7 @@ public record FamilyMemberRequest(
         String name,
         @NotNull
         boolean isChild,
-        PrescriptionResponse prescription,
+        long prescriptionId,
         Long familyId,
         int age,
         float weight

@@ -5,7 +5,7 @@ public record FamilyMemberResponse(
         long id,
         String name,
         boolean isChild,
-        PrescriptionResponse prescription,
+        long prescriptionId,
         Long familyId
 
 ) {
