@@ -24,8 +24,3 @@
     medicines_id BIGINT NOT NULL,
     primary key (families_id, medicines_id)
   );
-
-ALTER TABLE members ADD CONSTRAINT FK_PRESCRIPTION_ON_MEMBER FOREIGN KEY (prescription_id) REFERENCES  prescriptions (id);
-
-ALTER TABLE medicines_to_families ADD CONSTRAINT FK_USERS_ON_FAMILIES FOREIGN KEY (medicines_id) REFERENCES medicines (id);
-ALTER TABLE medicines_to_families ADD CONSTRAINT FK_FAMILIES_ON_USERS FOREIGN KEY (families_id) REFERENCES families (id);

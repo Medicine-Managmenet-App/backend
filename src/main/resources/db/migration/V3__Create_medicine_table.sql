@@ -7,3 +7,6 @@
     CONSTRAINT pk_medicines PRIMARY KEY (id)
  );
 
+ ALTER TABLE medicines_to_families ADD CONSTRAINT FK_USERS_ON_FAMILIES FOREIGN KEY (medicines_id) REFERENCES medicines (id);
+ ALTER TABLE medicines_to_families ADD CONSTRAINT FK_FAMILIES_ON_USERS FOREIGN KEY (families_id) REFERENCES families (id);
+
