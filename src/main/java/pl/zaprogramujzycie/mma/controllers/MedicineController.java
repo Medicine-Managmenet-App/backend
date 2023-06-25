@@ -19,7 +19,7 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
-@RequestMapping("/medicines")
+@RequestMapping("/family/{familyId}/medicines")
 public class MedicineController {
     private final MedicineService service;
 
@@ -36,8 +36,8 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    ResponseEntity<MedicinesResponse> findAll(final Pageable pageable, final Principal principal) throws NotFoundException {
-        return ResponseEntity.ok(service.findAll(principal, pageable));
+    ResponseEntity<MedicinesResponse> findAll(final Pageable pageable, final Principal principal, @PathVariable final long familyId) throws NotFoundException {
+        return ResponseEntity.ok(service.findAll(principal, pageable, familyId));
     }
 
 
@@ -52,9 +52,9 @@ public class MedicineController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest) throws NotFoundException {
-        MedicineResponse response = service.save(newMedicineRequest, principal);
-        return ResponseEntity.created(URI.create("/medicines/" + response.id())).body(response);
+    ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest, @PathVariable final long familyId) throws NotFoundException {
+        MedicineResponse response = service.save(newMedicineRequest, principal, familyId);
+        return ResponseEntity.created(URI.create("/family/" + familyId +"/medicines/" + response.id())).body(response);
     }
 
     @Operation(
@@ -67,8 +67,8 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    ResponseEntity<MedicineResponse> findById(final Principal principal, @PathVariable final long id) throws ChangeSetPersister.NotFoundException {
-        return ResponseEntity.ok(service.findById(id, principal));
+    ResponseEntity<MedicineResponse> findById(final Principal principal, @PathVariable final long id, @PathVariable final long familyId) throws ChangeSetPersister.NotFoundException {
+        return ResponseEntity.ok(service.findById(id, principal, familyId));
     }
 
     @Operation(
@@ -82,8 +82,8 @@ public class MedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/{id}")
-    ResponseEntity<MedicineResponse> updateMedicine(final Principal principal, @PathVariable final long id, @RequestBody final MedicineRequest request) throws ChangeSetPersister.NotFoundException {
-        service.partialUpdate(id, request, principal);
+    ResponseEntity<MedicineResponse> updateMedicine(final Principal principal, @PathVariable final long id, @PathVariable final long familyId, @RequestBody final MedicineRequest request) throws ChangeSetPersister.NotFoundException {
+        service.partialUpdate(id, request, principal, familyId);
         return ResponseEntity.noContent().build();
     }
 
@@ -99,8 +99,8 @@ public class MedicineController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> deleteMedicine( final Principal principal, @PathVariable final long id) throws Exception{
-        service.deleteById(id, principal);
+    ResponseEntity<Void> deleteMedicine( final Principal principal, @PathVariable final long id, @PathVariable final long familyId) throws Exception{
+        service.deleteById(id, principal, familyId);
         return ResponseEntity.noContent().build();
     }
 

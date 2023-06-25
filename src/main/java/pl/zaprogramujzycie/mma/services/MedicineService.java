@@ -19,7 +19,6 @@ import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
-import pl.zaprogramujzycie.mma.utils.FamilyAssigner;
 import pl.zaprogramujzycie.mma.utils.mappers.FamilyMapper;
 import pl.zaprogramujzycie.mma.utils.mappers.MedicineMapper;
 
@@ -31,43 +30,44 @@ import java.util.Optional;
 public class MedicineService {
 
     private final MedicineRepository repository;
-    private final FamilyAssigner assigner;
+    private final FamilyService familyService;
     private final MedicineMapper mapper
             = Mappers.getMapper(MedicineMapper.class);
     private final FamilyMapper familyMapper
             = Mappers.getMapper(FamilyMapper.class);
 
-    public MedicineService(MedicineRepository repository, FamilyAssigner assigner) {
-        this.assigner = assigner;
+    public MedicineService(MedicineRepository repository,
+                           FamilyService familyService) {
         this.repository = repository;
+        this.familyService = familyService;
     }
 
     @Transactional
-    public MedicineResponse save(final MedicineRequest request, final Principal principal) throws NotFoundException {
+    public MedicineResponse save(final MedicineRequest request, final Principal principal, final long familyId) throws NotFoundException {
         Medicine newMedicine = mapper.mapToEntity(request);
-        FamilyResponse familyResponse = assigner.assignFamilyAsOwner(principal);
+        FamilyResponse familyResponse = familyService.findById(principal, familyId);
         newMedicine.setFamily(familyMapper.mapResponseToEntity(familyResponse));
         return mapper.mapToResponse(repository.save(newMedicine));
     }
 
-    public MedicineResponse findById(final long id, final Principal principal) throws NotFoundException {
-        Medicine response = findEntity(id, principal);
+    public MedicineResponse findById(final long id, final Principal principal, final long familyId) throws NotFoundException {
+        Medicine response = findEntity(id, principal, familyId);
         return mapper.mapToResponse(response);
     }
 
-    public MedicinesResponse findAll(final Principal principal, final Pageable pageable) throws NotFoundException {
-        FamilyResponse familyResponse = assigner.assignFamilyAsOwner(principal);
+    public MedicinesResponse findAll(final Principal principal, final Pageable pageable, final long familyId) throws NotFoundException {
+        FamilyResponse familyResponse = familyService.findById(principal, familyId);
         Page<Medicine> medicine = repository.findByFamily(familyMapper.mapResponseToEntity(familyResponse), PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"))));
-        return new MedicinesResponse(mapper.mapToList(medicine));
+        return mapper.mapToList(medicine);
     }
 
     // ToDo if(PAO != 0) change expiration Date to (request timestamp + PAO)
     @Transactional
-    public void partialUpdate(final long id, final MedicineRequest request, final Principal principal) throws ChangeSetPersister.NotFoundException {
-        Medicine response = findEntity(id, principal);
+    public void partialUpdate(final long id, final MedicineRequest request, final Principal principal, final long familyId) throws ChangeSetPersister.NotFoundException {
+        Medicine response = findEntity(id, principal, familyId);
         if (request.name() != null) {
             response.setName(request.name());
         }
@@ -79,14 +79,15 @@ public class MedicineService {
         }
     }
 
-    private Medicine findEntity(final long id, final Principal principal) throws NotFoundException {
-        FamilyResponse familyResponse = assigner.assignFamilyAsOwner(principal);
+    private Medicine findEntity(final long id, final Principal principal, final long familyId) throws NotFoundException {
+        FamilyResponse familyResponse = familyService.findById(principal, familyId);
         Optional<Medicine> response = repository.findByIdAndFamily(id, familyMapper.mapResponseToEntity(familyResponse));
         return response.orElseThrow(NotFoundException:: new);
     }
 
-    public void deleteById(final long id, final Principal principal) throws NotFoundException {
-        Medicine response = findEntity(id, principal);
+    public void deleteById(final long id, final Principal principal, final long familyId) throws NotFoundException {
+        familyService.findById(principal, familyId);
+        Medicine response = findEntity(id, principal, familyId);
         try {
             repository.deleteById(response.getId());
         } catch (DataIntegrityViolationException ic) {

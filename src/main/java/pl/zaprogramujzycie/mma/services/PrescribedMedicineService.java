@@ -25,21 +25,14 @@ import java.util.Optional;
 public class PrescribedMedicineService {
 
     private final PrescribedMedicineRepository repository;
-
-    private final UserToFamilyValidator validator;
-
     private final MedicineService medicineService;
-//ToDo change path to prescripion and remove family service
-    private final FamilyService familyService;
 
     private final PrescribedMedicineMapper mapper
             = Mappers.getMapper(PrescribedMedicineMapper.class);
 
-    PrescribedMedicineService(PrescribedMedicineRepository repository, UserToFamilyValidator validator, MedicineService medicineService, FamilyService familyService) {
+    PrescribedMedicineService(PrescribedMedicineRepository repository, MedicineService medicineService) {
         this.repository = repository;
-        this.validator = validator;
         this.medicineService = medicineService;
-        this.familyService = familyService;
     }
 
     // public PrescribedMedicineResponse save(PrescribedMedicineRequest request, Principal principal) {
@@ -51,24 +44,16 @@ public class PrescribedMedicineService {
     // }
 
 @Transactional
-    public PrescribedMedicineResponse findById(final long id, final Principal principal, final long familyId, final long prescriptionId) throws NotFoundException {
-        validator.checkUserPermissionsOnFamily(principal, familyId);
-        System.out.println("----service---");
-        System.out.println("principal" + principal);
+    public PrescribedMedicineResponse findById(final long id, final long prescriptionId) throws NotFoundException {
         PrescribedMedicine response = findEntity(id, prescriptionId);
-        System.out.println("service administration times: " + response.getAdministrationTimes());
         return mapper.mapToResponse(response);
     }
 
-
-
     public PrescribedMedicinesResponse findAll(final Principal principal, final Pageable pageable, final long familyId, final long prescriptionId){
-        System.out.println("----srvice---");
         Page<PrescribedMedicine> prescribedMedicine = repository.findByPrescriptionId(prescriptionId, PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSortOr(Sort.by(Sort.Direction.ASC, "id"))));
-        System.out.println("---prescribed medicine page+ " + prescribedMedicine);
        return mapper.mapToList(prescribedMedicine);
     }
 

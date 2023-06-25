@@ -38,7 +38,6 @@ public class PrescribedMedicineController {
     })
     @GetMapping
     ResponseEntity<PrescribedMedicinesResponse> findAll(final Principal principal, final Pageable pageable, @PathVariable final long familyId, @PathVariable final long prescriptionId) {
-        System.out.println("---controller---");
         return ResponseEntity.ok(service.findAll(principal, pageable, familyId, prescriptionId));
     }
 
@@ -68,7 +67,7 @@ public class PrescribedMedicineController {
     })
     @GetMapping("/{id}")
     ResponseEntity<PrescribedMedicineResponse> findById(final Principal principal, @PathVariable final long id, @PathVariable final long familyId, @PathVariable final long prescriptionId) throws NotFoundException {
-        return ResponseEntity.ok(service.findById(id, principal, familyId, prescriptionId));
+        return ResponseEntity.ok(service.findById(id, prescriptionId));
     }
 
     @Operation(
