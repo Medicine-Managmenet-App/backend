@@ -25,18 +25,18 @@ public class Prescription {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "prescription")
     private List<PrescribedMedicine> prescribedMedicines;
 
-    private Long OwnerFamilyId;
+    private Long familyId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Prescription that = (Prescription) o;
-        return Objects.equals(id, that.id) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(OwnerFamilyId, that.OwnerFamilyId);
+        return Objects.equals(id, that.id) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(familyId, that.familyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, prescribedMedicines, OwnerFamilyId);
+        return Objects.hash(id, prescribedMedicines, familyId);
     }
 }

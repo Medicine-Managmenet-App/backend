@@ -9,6 +9,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.PrescriptionRequest;
 import pl.zaprogramujzycie.mma.dto.response.PrescriptionResponse;
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
+import pl.zaprogramujzycie.mma.services.PrescriptionService;
 
 import java.security.Principal;
 // import pl.zaprogramujzycie.mma.services.PrescriptionsService;
@@ -16,8 +18,14 @@ import java.security.Principal;
 
 
 @RestController
-@RequestMapping("/prescriptions")
+@RequestMapping("/families/{familyId}/familyMembers/{familyMemberId}/prescriptions")
 public class PrescriptionController {
+
+    private final PrescriptionService prescriptionService;
+
+    PrescriptionController(PrescriptionService prescriptionService) {
+        this.prescriptionService = prescriptionService;
+    }
 
     @Operation(
             description = "Create new list of prescriptions, connect it with user",
@@ -44,8 +52,8 @@ public class PrescriptionController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<PrescriptionResponse> getPrescription(@AuthenticationPrincipal final Principal principal, @PathVariable final long id) {
-        return null;
+    public ResponseEntity<PrescriptionResponse> getPrescription(final Principal principal, @PathVariable final long id, @PathVariable final long familyId) throws NotFoundException {
+        return ResponseEntity.ok(prescriptionService.findById(principal, id, familyId));
     }
 
     @Operation(

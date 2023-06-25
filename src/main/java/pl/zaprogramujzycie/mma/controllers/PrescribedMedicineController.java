@@ -3,27 +3,30 @@ package pl.zaprogramujzycie.mma.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
-
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
+import pl.zaprogramujzycie.mma.services.PrescribedMedicineService;
 import java.security.Principal;
 
+@Slf4j
 @RestController
-@RequestMapping("/prescribedMedicines")
-public class PrescribedMedicinesController {
+@RequestMapping("/families/{familyId}/familyMembers/{familyMemberId}/prescriptions/{prescriptionId}/prescribedMedicines")
+public class PrescribedMedicineController {
+
+    private final PrescribedMedicineService service;
+
+    public PrescribedMedicineController(final PrescribedMedicineService service) {
+        this.service = service;
+    }
+
 
     @Operation(
             description = "Returns all registered prescribed PrescribedMedicines for user",
@@ -33,9 +36,10 @@ public class PrescribedMedicinesController {
             @ApiResponse(responseCode = "200", description = "Prescribed prescribed medicine found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @GetMapping("/{page}/{size}/{sort}")
-    ResponseEntity<PrescribedMedicinesResponse> findAll(@AuthenticationPrincipal final Principal principal, @PathVariable final int page, @PathVariable final int size, @PathVariable final String sort) {
-        return null;
+    @GetMapping
+    ResponseEntity<PrescribedMedicinesResponse> findAll(final Principal principal, final Pageable pageable, @PathVariable final long familyId, @PathVariable final long prescriptionId) {
+        System.out.println("---controller---");
+        return ResponseEntity.ok(service.findAll(principal, pageable, familyId, prescriptionId));
     }
 
     @Operation(
@@ -49,7 +53,7 @@ public class PrescribedMedicinesController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<PrescribedMedicineResponse> createPrescribedMedicine(@AuthenticationPrincipal final Principal principal, @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) {
+    ResponseEntity<PrescribedMedicineResponse> createPrescribedMedicine(final Principal principal, @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) {
         return null;
     }
 
@@ -63,8 +67,8 @@ public class PrescribedMedicinesController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    ResponseEntity<PrescribedMedicineResponse> findById(@AuthenticationPrincipal final Principal principal, @PathVariable final long id) {
-        return null;
+    ResponseEntity<PrescribedMedicineResponse> findById(final Principal principal, @PathVariable final long id, @PathVariable final long familyId, @PathVariable final long prescriptionId) throws NotFoundException {
+        return ResponseEntity.ok(service.findById(id, principal, familyId, prescriptionId));
     }
 
     @Operation(
@@ -77,8 +81,8 @@ public class PrescribedMedicinesController {
             @ApiResponse(responseCode = "404", description = "prescribed medicine not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping("/{id}")
-    ResponseEntity<PrescribedMedicineResponse> updatePrescribedMedicine(@AuthenticationPrincipal final Principal principal, @PathVariable final long id, @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) {
+    @PutMapping("/{id}")
+    ResponseEntity<PrescribedMedicineResponse> updatePrescribedMedicine(final Principal principal, @PathVariable final long id, @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) {
         return null;
     }
 

@@ -22,13 +22,12 @@ public class TestSecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         return http.authorizeHttpRequests()
-                .mvcMatchers("/medicines/**")
+                .antMatchers("/families/**", "/medicines/**", "/prescribedMedicines/**")
                 .hasRole("MEDICINE-OWNER")
                 .and()
-                .antMatcher("/users/**")
                 .csrf().disable()
-                .httpBasic().disable()
-                .build();
+                .httpBasic()
+                .and().build();
     }
 
 

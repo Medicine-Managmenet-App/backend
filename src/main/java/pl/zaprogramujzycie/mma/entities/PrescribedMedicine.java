@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -25,15 +26,26 @@ public class PrescribedMedicine {
     @JoinColumn(referencedColumnName = "id")
     private Medicine medicine;
     private double dosage;
-
     private int numberOfDoses;
     private int dosageInterval;
     @ElementCollection
-    private List<OffsetDateTime> administrationTimes;
+    private List<LocalTime> administrationTimes;
 
     @ManyToOne
-    @JoinColumn(name = "prescription_id")
+    @JoinColumn(name = "prescription_id", insertable = false, updatable = false)
     private Prescription prescription;
+
+    @Column(name = "prescription_id")
+    private long prescriptionId;
+
+    public PrescribedMedicine(Long id, Medicine medicine, double dosage, int numberOfDoses, int dosageInterval, List<LocalTime> administrationTimes) {
+        this.id = id;
+        this.medicine = medicine;
+        this.dosage = dosage;
+        this.numberOfDoses = numberOfDoses;
+        this.dosageInterval = dosageInterval;
+        this.administrationTimes = administrationTimes;
+    }
 
     @Override
     public boolean equals(Object o) {
