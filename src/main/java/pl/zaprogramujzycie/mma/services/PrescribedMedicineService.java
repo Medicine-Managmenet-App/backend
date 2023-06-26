@@ -2,12 +2,14 @@ package pl.zaprogramujzycie.mma.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
@@ -26,30 +28,40 @@ public class PrescribedMedicineService {
 
     private final PrescribedMedicineRepository repository;
     private final MedicineService medicineService;
+    private final UserToFamilyValidator validator;
 
     private final PrescribedMedicineMapper mapper
             = Mappers.getMapper(PrescribedMedicineMapper.class);
 
-    PrescribedMedicineService(PrescribedMedicineRepository repository, MedicineService medicineService) {
+    PrescribedMedicineService(PrescribedMedicineRepository repository,
+                              MedicineService medicineService,
+                              UserToFamilyValidator validator) {
         this.repository = repository;
         this.medicineService = medicineService;
+        this.validator = validator;
     }
 
-    // public PrescribedMedicineResponse save(PrescribedMedicineRequest request, Principal principal) {
-    //     Medicine medicine = findMatchingMedicine(request.medicineId());
-    //     PrescribedMedicine prescribedMedicine = PrescribedMedicineMapper.mapToEntity(request, medicine);
-    //     prescribedMedicine.setOwner(OwnerAssigner.assignFamilyAsOwner(principal));
-    //     PrescribedMedicineResponse response = PrescribedMedicineMapper.mapToResponseDTO(repository.save(prescribedMedicine));
-    //     return response;
-    // }
+    @Transactional
+    public PrescribedMedicineResponse save(final PrescribedMedicineRequest request, final Principal principal,
+                                           final long prescriptionId, final long familyId) throws NotFoundException {
+        validator.checkUserPermissionsOnFamily(principal, familyId);
 
-@Transactional
-    public PrescribedMedicineResponse findById(final long id, final long prescriptionId) throws NotFoundException {
+        PrescribedMedicine prescribedMedicine = mapper.mapToEntity(request);
+        prescribedMedicine.setMedicineId(request.medicine());
+        prescribedMedicine.setPrescriptionId(prescriptionId);
+
+        return mapper.mapToResponse(repository.save(prescribedMedicine));
+    }
+
+    public PrescribedMedicineResponse findById(final long id, final long prescriptionId,
+                                               final long familyId, final Principal principal) throws NotFoundException {
+        validator.checkUserPermissionsOnFamily(principal, familyId);
         PrescribedMedicine response = findEntity(id, prescriptionId);
         return mapper.mapToResponse(response);
     }
 
-    public PrescribedMedicinesResponse findAll(final Principal principal, final Pageable pageable, final long familyId, final long prescriptionId){
+    public PrescribedMedicinesResponse findAll(final Principal principal, final Pageable pageable, final long familyId, final long prescriptionId) throws NotFoundException {
+        validator.checkUserPermissionsOnFamily(principal, familyId);
         Page<PrescribedMedicine> prescribedMedicine = repository.findByPrescriptionId(prescriptionId, PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
@@ -57,49 +69,30 @@ public class PrescribedMedicineService {
        return mapper.mapToList(prescribedMedicine);
     }
 
+    public void partialUpdate(final long id, final PrescribedMedicineRequest request,
+                                                    final Principal principal, final long prescriptionId,
+                                                    final long familyId) throws NotFoundException {
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        PrescribedMedicine updatedEntity = findEntity(id, prescriptionId);
+            if (request.medicine() != 0){updatedEntity.setMedicineId(request.medicine());}
+            if (request.dosage() != 0){updatedEntity.setDosage(request.dosage());}
+            if (request.numberOfDoses() != 0){updatedEntity.setNumberOfDoses(request.numberOfDoses());}
+            if (request.administrationTimes() != null){updatedEntity.setAdministrationTimes(request.administrationTimes());}
+            if (request.dosageInterval() != 0){updatedEntity.setDosageInterval(request.dosageInterval());}
+            repository.save(updatedEntity);
+    }
+    @Transactional
+    public void deleteById(final long id, final Principal principal,
+                           final long familyId, final long prescriptionId) throws NotFoundException {
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        PrescribedMedicine response = findEntity(id, prescriptionId);
+        repository.deleteById(response.getId());
+    }
 
-
-    // public PrescribedMedicinesResponse findAllById (List<PrescribedMedicine> medicines){
-    //     List<Long> ids = new ArrayList<>();
-    //     for(PrescribedMedicine medicine : medicines) {
-    //         long id = medicine.getId();
-    //         ids.add(id);
-    //     }
-    //     return new PrescribedMedicinesResponse(PrescribedMedicineMapper.mapToResponseDTOList(repository.findAllById(ids)));
-    // }
-    //
-    // public PrescribedMedicineResponse partialUpdate(long id, PrescribedMedicineRequest request, Principal principal) {
-    //     PrescribedMedicine updatedEntity = findEntity(id, principal);
-    //     Medicine medicine = findMatchingMedicine(request.medicineId());
-    //
-    //     if (updatedEntity != null) {
-    //         if (request.medicineId() != 0){updatedEntity.setMedicine(medicine);}
-    //         if (request.dosage() != 0){updatedEntity.setDosage(request.dosage());}
-    //         if (request.firstDose() != null){updatedEntity.setFirstDose(request.firstDose());}
-    //         if (request.dosageInterval() != 0){updatedEntity.setDosageInterval(request.dosageInterval());}
-    //         repository.save(updatedEntity);
-    //         return PrescribedMedicineMapper.mapToResponseDTO(updatedEntity);
-    //     }
-    //     return null;
-    // }
-    //
-    // public boolean deleteById(long id, Principal principal){
-    //     if (repository.existsByIdAndOwner(id, principal.getName())) {
-    //         repository.deleteById(id);
-    //         return true;
-    //     }
-    //     return false;
-    // }
-    //
+    @Transactional
     private PrescribedMedicine findEntity(final long id, final long prescriptionId) throws NotFoundException {
         Optional<PrescribedMedicine> response = repository.findByIdAndPrescriptionId(id, prescriptionId);
         return response.orElseThrow(NotFoundException:: new);
     }
-
-    //
-    // private Medicine findMatchingMedicine(long medicineId){
-    //     return medicineRepository.getReferenceById(medicineId);
-    // }
-
 
 }

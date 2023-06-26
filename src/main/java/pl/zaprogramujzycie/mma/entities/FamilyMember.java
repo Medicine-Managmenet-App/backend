@@ -27,7 +27,11 @@ public class FamilyMember {
     @OneToOne
     private Prescription prescription;
     @ManyToOne
+    @JoinColumn(name = "family_id", insertable = false, updatable = false)
     private Family family;
+
+    @Column(name = "family_id")
+    private Long familyId;
 
     @Override
     public boolean equals(final Object o) {

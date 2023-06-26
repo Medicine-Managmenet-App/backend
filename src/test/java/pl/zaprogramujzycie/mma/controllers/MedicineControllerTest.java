@@ -37,7 +37,7 @@ public class MedicineControllerTest {
     void shouldReturnAMedicineWhenDataIsSaved() {
         ResponseEntity<MedicineResponse> getResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/medicines/100", MedicineResponse.class);
+                .getForEntity("/families/100/medicines/100", MedicineResponse.class);
 
         MedicineResponse response = getResponse.getBody();
 
@@ -55,7 +55,7 @@ public class MedicineControllerTest {
         MedicineRequest newMedicine = new MedicineRequest( "med1",  OffsetDateTime.parse("2023-06-15T21:27:17.289601+02"), 6);
 
         ResponseEntity<Void> createResponse = restTemplate.withBasicAuth("login", "password")
-                .postForEntity("/medicines", newMedicine, Void.class);
+                .postForEntity("/families/100/medicines", newMedicine, Void.class);
 
         URI locationOfNewMedicine = createResponse.getHeaders().getLocation();
         ResponseEntity<MedicineResponse> getResponse = restTemplate.withBasicAuth("login", "password")
@@ -76,7 +76,7 @@ public class MedicineControllerTest {
     void shouldNotReturnAMedicineWithAnUnknownId() {
         ResponseEntity<MedicineResponse> response = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/medicines/999", MedicineResponse.class);
+                .getForEntity("/families/100/medicines/999", MedicineResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -84,7 +84,7 @@ public class MedicineControllerTest {
     void shouldReturnAllMedicinesWhenListIsRequested() {
         ResponseEntity<MedicinesResponse> getResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/medicines", MedicinesResponse.class);
+                .getForEntity("/families/100/medicines", MedicinesResponse.class);
 
         MedicinesResponse response = getResponse.getBody();
         List<Long> ids = response. medicines()
@@ -106,7 +106,7 @@ public class MedicineControllerTest {
     void shouldReturnAPageOfMedicines() {
         ResponseEntity<MedicinesResponse> getResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/medicines?page=0&size=2", MedicinesResponse.class);
+                .getForEntity("/families/100/medicines?page=0&size=2", MedicinesResponse.class);
 
         MedicinesResponse response = getResponse.getBody();
 
@@ -119,7 +119,7 @@ public class MedicineControllerTest {
     void shouldDeleteAnExistingMedicine() {
         ResponseEntity<Void> response = restTemplate
                 .withBasicAuth("login", "password")
-                .exchange("/medicines/1000", HttpMethod.DELETE, null, Void.class);
+                .exchange("/families/100/medicines/1000", HttpMethod.DELETE, null, Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
@@ -128,7 +128,7 @@ public class MedicineControllerTest {
     void shouldNotDeleteMedicineConnectedToPrescribedMedicine(){
         ResponseEntity<Void> response = restTemplate
                 .withBasicAuth("login", "password")
-                .exchange("/medicines/101", HttpMethod.DELETE, null, Void.class);
+                .exchange("/families/100/medicines/101", HttpMethod.DELETE, null, Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.IM_USED);
     }
@@ -137,7 +137,7 @@ public class MedicineControllerTest {
     void shouldNotDeleteAMedicineThatDoesNotExist() {
         ResponseEntity<Void> deleteResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .exchange("/medicines/99999", HttpMethod.DELETE, null, Void.class);
+                .exchange("/families/100/medicines/99999", HttpMethod.DELETE, null, Void.class);
 
         assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -146,11 +146,11 @@ public class MedicineControllerTest {
     void shouldNotAllowDeletionOfMedicineTheyDoNotOwn() {
         ResponseEntity<Void> deleteResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .exchange("/medicines/102", HttpMethod.DELETE, null, Void.class);
+                .exchange("/families/101/medicines/102", HttpMethod.DELETE, null, Void.class);
 
         ResponseEntity<MedicineResponse> getResponse = restTemplate
                 .withBasicAuth("login3", "password3")
-                .getForEntity("/medicines/102", MedicineResponse.class);
+                .getForEntity("/families/101/medicines/102", MedicineResponse.class);
 
         assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -161,11 +161,11 @@ public class MedicineControllerTest {
     void shouldNotReturnAMedicineWhenUsingBadCredentials() {
         ResponseEntity<MedicineResponse> responseUsername = restTemplate
                 .withBasicAuth("BAD-USER", "password")
-                .getForEntity("/medicines/100", MedicineResponse.class);
+                .getForEntity("/families/100/medicines/100", MedicineResponse.class);
 
         ResponseEntity<MedicineResponse> responsePassword = restTemplate
                 .withBasicAuth("login", "BAD-PASSWORD")
-                .getForEntity("/medicines/100", MedicineResponse.class);
+                .getForEntity("/families/100/medicines/100", MedicineResponse.class);
 
         assertThat(responseUsername.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         assertThat(responsePassword.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
@@ -175,8 +175,7 @@ public class MedicineControllerTest {
     void shouldRejectUsersWhoAreNotMedicineOwners() {
         ResponseEntity<MedicineResponse> response = restTemplate
                 .withBasicAuth("login1", "password1")
-                .getForEntity("/medicines/100", MedicineResponse.class);
-
+                .getForEntity("/families/100/medicines/100", MedicineResponse.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
     }
 
@@ -184,7 +183,7 @@ public class MedicineControllerTest {
     void shouldNotAllowAccessToMedicinesTheyDoNotOwn() {
         ResponseEntity<MedicineResponse> response = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/medicines/104", MedicineResponse.class);
+                .getForEntity("/families/100/medicines/104", MedicineResponse.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -197,10 +196,10 @@ public class MedicineControllerTest {
 
         ResponseEntity<Void> putResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .exchange("/medicines/100", HttpMethod.PUT, request, Void.class);
+                .exchange("/families/100/medicines/100", HttpMethod.PUT, request, Void.class);
         ResponseEntity<MedicineResponse> getResponse = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/medicines/100", MedicineResponse.class);
+                .getForEntity("/families/100/medicines/100", MedicineResponse.class);
         MedicineResponse response = getResponse.getBody();
 
         assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
@@ -218,7 +217,7 @@ public class MedicineControllerTest {
         HttpEntity<MedicineRequest> request = new HttpEntity<>(unknownMedicine);
         ResponseEntity<Void> response = restTemplate
                 .withBasicAuth("login", "password")
-                .exchange("/medicines/99999", HttpMethod.PUT, request, Void.class);
+                .exchange("/families/100/medicines/99999", HttpMethod.PUT, request, Void.class);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }

@@ -10,10 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
+import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.services.PrescribedMedicineService;
+
+import java.net.URI;
 import java.security.Principal;
 
 @Slf4j
@@ -37,7 +40,7 @@ public class PrescribedMedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping
-    ResponseEntity<PrescribedMedicinesResponse> findAll(final Principal principal, final Pageable pageable, @PathVariable final long familyId, @PathVariable final long prescriptionId) {
+    ResponseEntity<PrescribedMedicinesResponse> findAll(final Principal principal, final Pageable pageable, @PathVariable final long familyId, @PathVariable final long prescriptionId) throws NotFoundException {
         return ResponseEntity.ok(service.findAll(principal, pageable, familyId, prescriptionId));
     }
 
@@ -52,8 +55,15 @@ public class PrescribedMedicineController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<PrescribedMedicineResponse> createPrescribedMedicine(final Principal principal, @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) {
-        return null;
+    ResponseEntity<PrescribedMedicineResponse> createPrescribedMedicine(final Principal principal,
+                                                                        @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest,
+                                                                        @PathVariable final long familyId,
+                                                                        @PathVariable final long familyMemberId,
+                                                                        @PathVariable final long prescriptionId) throws NotFoundException {
+        PrescribedMedicineResponse response = service.save(prescribedMedicineRequest, principal, prescriptionId, familyId);
+        return ResponseEntity.created(URI.create("/families/" + familyId +
+                "/familyMembers/" + familyMemberId + "/prescriptions/"
+                + prescriptionId + "/prescribedMedicines/" + response.id())).body(response);
     }
 
     @Operation(
@@ -66,8 +76,12 @@ public class PrescribedMedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    ResponseEntity<PrescribedMedicineResponse> findById(final Principal principal, @PathVariable final long id, @PathVariable final long familyId, @PathVariable final long prescriptionId) throws NotFoundException {
-        return ResponseEntity.ok(service.findById(id, prescriptionId));
+    ResponseEntity<PrescribedMedicineResponse> findById(final Principal principal,
+                                                        @PathVariable final long id,
+                                                        @PathVariable final long familyId,
+                                                        @PathVariable final long prescriptionId
+                                                        ) throws NotFoundException {
+        return ResponseEntity.ok(service.findById(id, prescriptionId, familyId, principal));
     }
 
     @Operation(
@@ -81,8 +95,13 @@ public class PrescribedMedicineController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PutMapping("/{id}")
-    ResponseEntity<PrescribedMedicineResponse> updatePrescribedMedicine(final Principal principal, @PathVariable final long id, @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) {
-        return null;
+    ResponseEntity<PrescribedMedicineResponse> updatePrescribedMedicine(final Principal principal,
+                                                                        @PathVariable final long id,
+                                                                        @PathVariable final long familyId,
+                                                                        @PathVariable final long prescriptionId,
+                                                                        @RequestBody final PrescribedMedicineRequest prescribedMedicineRequest) throws NotFoundException {
+        service.partialUpdate(id, prescribedMedicineRequest, principal, prescriptionId, familyId);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -97,7 +116,11 @@ public class PrescribedMedicineController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> deletePrescribedMedicine(@AuthenticationPrincipal final Principal principal, @PathVariable final long id) {
-        return null;
+    ResponseEntity<Void> deletePrescribedMedicine(final Principal principal,
+                                                  @PathVariable final long id,
+                                                  @PathVariable final long familyId,
+                                                  @PathVariable final long prescriptionId) throws NotFoundException {
+        service.deleteById(id, principal, familyId, prescriptionId);
+        return ResponseEntity.noContent().build();
     }
 }

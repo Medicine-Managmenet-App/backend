@@ -23,8 +23,11 @@ public class PrescribedMedicine {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
+    @JoinColumn(name = "medicine_id", insertable = false, updatable = false, referencedColumnName = "id")
     private Medicine medicine;
+
+    @Column(name = "medicine_id")
+    private Long medicineId;
     private double dosage;
     private int numberOfDoses;
     private int dosageInterval;

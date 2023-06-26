@@ -22,26 +22,24 @@ public class UserService {
 
     private final UserRepository repository;
 
-    private final FamilyService familyService;
 
     private final UserMapper mapper
             = Mappers.getMapper(UserMapper.class);
 
-    public UserService(UserRepository repository, FamilyService familyService) {
+    public UserService(UserRepository repository) {
         this.repository = repository;
-        this.familyService = familyService;
     }
 
     @Transactional
     public UserResponse save(final UserRequest request) {
-        Family family = familyService.create();
+        // Family family = familyService.create();
         User newUser = mapper.mapToEntity(request);
-        newUser.setFamily(family);
+        // newUser.setFamily(family);
         repository.save(newUser);
-        System.out.println("----" + family.getUsers());
-        List<User> users = family.getUsers();
-        users.add(newUser);
-        family.setUsers(users);
+        // System.out.println("----" + family.getUsers());
+        // List<User> users = family.getUsers();
+        // users.add(newUser);
+        // family.setUsers(users);
 
         return mapper.mapToResponse(repository.save(newUser));
     }

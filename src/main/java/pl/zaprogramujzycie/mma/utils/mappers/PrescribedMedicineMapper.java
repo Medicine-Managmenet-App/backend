@@ -18,8 +18,10 @@ import java.util.List;
 @Mapper(componentModel = "medicine")
 public interface PrescribedMedicineMapper {
 
+    @Mapping(target = "medicine", source = "medicineId")
     PrescribedMedicineResponse mapToResponse (final PrescribedMedicine prescribedMedicine);
 
+    @Mapping(target = "medicineId", source = "medicine")
     default PrescribedMedicine mapToEntity (final PrescribedMedicineRequest request){
         return new PrescribedMedicine(null, medicineEntityMapper(request.medicine()),
                 request.dosage(), request.numberOfDoses(), request.dosageInterval(),

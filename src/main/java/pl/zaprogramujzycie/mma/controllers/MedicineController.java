@@ -19,7 +19,7 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
-@RequestMapping("/family/{familyId}/medicines")
+@RequestMapping("/families/{familyId}/medicines")
 public class MedicineController {
     private final MedicineService service;
 
@@ -54,7 +54,7 @@ public class MedicineController {
     @ResponseStatus(HttpStatus.CREATED)
     ResponseEntity<MedicineResponse> createMedicine(final Principal principal, @RequestBody final MedicineRequest newMedicineRequest, @PathVariable final long familyId) throws NotFoundException {
         MedicineResponse response = service.save(newMedicineRequest, principal, familyId);
-        return ResponseEntity.created(URI.create("/family/" + familyId +"/medicines/" + response.id())).body(response);
+        return ResponseEntity.created(URI.create("/families/" + familyId +"/medicines/" + response.id())).body(response);
     }
 
     @Operation(

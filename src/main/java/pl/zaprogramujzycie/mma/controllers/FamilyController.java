@@ -16,10 +16,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.zaprogramujzycie.mma.dto.request.FamilyRequest;
 import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
+import pl.zaprogramujzycie.mma.services.FamilyService;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/families")
 public class FamilyController {
+
+    private final FamilyService familyService;
+
+    private FamilyController(FamilyService familyService) {
+        this.familyService = familyService;
+    }
 
     @Operation(
             description = "Create new family",
@@ -63,8 +73,8 @@ public class FamilyController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    ResponseEntity<FamilyResponse> findById(@PathVariable final long id) {
-        return null;
+    ResponseEntity<FamilyResponse> findById(@PathVariable final long id, Principal principal) throws NotFoundException {
+        return ResponseEntity.ok(familyService.findById(principal,  id));
     }
 
     @Operation(

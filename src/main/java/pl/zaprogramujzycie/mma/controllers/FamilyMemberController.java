@@ -17,10 +17,20 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.zaprogramujzycie.mma.dto.request.FamilyMemberRequest;
 import pl.zaprogramujzycie.mma.dto.response.FamilyMemberResponse;
 import pl.zaprogramujzycie.mma.dto.response.FamilyMembersResponse;
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
+import pl.zaprogramujzycie.mma.services.FamilyMemberService;
+
+import java.security.Principal;
 
 @RestController
-@RequestMapping("/familyMembers")
+@RequestMapping("/families/{familyId}/familyMembers")
 public class FamilyMemberController {
+
+    private FamilyMemberService familyMemberService;
+
+    FamilyMemberController(FamilyMemberService familyMemberService) {
+        this.familyMemberService = familyMemberService;
+    }
 
     @Operation(
             description = "Returns all registered family members",
@@ -60,8 +70,8 @@ public class FamilyMemberController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    ResponseEntity<FamilyMemberResponse> findById(@PathVariable final long id) {
-        return null;
+    ResponseEntity<FamilyMemberResponse> findById(Principal principal, @PathVariable final long id, @PathVariable final long familyId) throws NotFoundException {
+        return ResponseEntity.ok(familyMemberService.findById(principal, id, familyId));
     }
 
 

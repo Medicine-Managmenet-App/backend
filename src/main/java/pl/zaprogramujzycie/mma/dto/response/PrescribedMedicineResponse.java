@@ -8,7 +8,7 @@ import java.util.List;
 public record PrescribedMedicineResponse(
 
         long id,
-        MedicineResponse medicine,
+        long medicine,
         double dosage,
         int numberOfDoses,
         int dosageInterval,

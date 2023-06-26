@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
+import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
@@ -71,40 +72,38 @@ public class PrescribedMedicineControllerTest {
 
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.id()).isEqualTo(100);
-        assertThat(response.medicine().id()).isEqualTo(100);
+        assertThat(response.medicine()).isEqualTo(100);
         assertThat(response.dosage()).isEqualTo(1.0);
         assertThat(response.numberOfDoses()).isEqualTo(3);
         assertThat(response.administrationTimes()).isEqualTo(timesList);
+        assertThat(response.dosageInterval()).isEqualTo(24);
     }
 
-    // @Test
-    // @DirtiesContext
-    // void shouldCreateANewPrescribedMedicine() {
-    //     PrescribedMedicineRequest newPrescribedMedicine = new PrescribedMedicineRequest(100L, 1.0, LocalTime.of(8, 00, 00), 8, "100");
-    //     ResponseEntity<Void> createResponse = restTemplate.withBasicAuth("100", "abc123")
-    //             .postForEntity("/prescribedMedicines", newPrescribedMedicine, Void.class);
-    //     assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-    //
-    //     URI locationOfNewMedicine = createResponse.getHeaders().getLocation();
-    //     ResponseEntity<String> getResponse = restTemplate.withBasicAuth("100", "abc123")
-    //             .getForEntity(locationOfNewMedicine, String.class);
-    //     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-    //
-    //     DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
-    //     Number id = documentContext.read("$.id");
-    //     Number medicineId = documentContext.read("$.medicineId");
-    //     Number dosage = documentContext.read("$.dosage");
-    //     List<String> administrationTimes = documentContext.read("$.administrationTimes");
-    //     String owner = documentContext.read("$.owner");
-    //
-    //     assertThat(id).isNotNull();
-    //     assertThat(medicineId).isEqualTo(100);
-    //     assertThat(dosage).isEqualTo(1.0);
-    //     assertThat(administrationTimes).isEqualTo(stringList);
-    //     assertThat(owner).isEqualTo("100");
-    // }
-    //
-    //
+    @Test
+    @DirtiesContext
+    void shouldCreateANewPrescribedMedicine() {
+        PrescribedMedicineRequest newPrescribedMedicine = new PrescribedMedicineRequest(100L, 1.0, 3, 24, timesList);
+        ResponseEntity<PrescribedMedicineResponse> createResponse = restTemplate.
+                withBasicAuth("login", "password")
+                .postForEntity("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines",
+                        newPrescribedMedicine, PrescribedMedicineResponse.class);
+
+        URI locationOfNewMedicine = createResponse.getHeaders().getLocation();
+        ResponseEntity<PrescribedMedicineResponse> getResponse = restTemplate.
+                withBasicAuth("login", "password")
+                .getForEntity(locationOfNewMedicine, PrescribedMedicineResponse.class);
+
+        PrescribedMedicineResponse response = getResponse.getBody();
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.id()).isNotNull();
+        assertThat(response.medicine()).isEqualTo(100);
+        assertThat(response.dosage()).isEqualTo(1.0);
+        assertThat(response.numberOfDoses()).isEqualTo(3);
+        assertThat(response.administrationTimes()).isEqualTo(timesList);
+        assertThat(response.dosageInterval()).isEqualTo(24);
+    }
+
     @Test
     void shouldNotReturnAPrescribedMedicineWithAnUnknownId() {
         ResponseEntity<PrescribedMedicineResponse> response = restTemplate
@@ -137,7 +136,7 @@ public class PrescribedMedicineControllerTest {
     void shouldNotAllowAccessToPrescribedMedicinesTheyDoNotOwn() {
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("login", "password")
-                .getForEntity("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/104", String.class);
+                .getForEntity("/families/101/familyMembers/103/prescriptions/103/prescribedMedicines/103", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -166,83 +165,86 @@ public class PrescribedMedicineControllerTest {
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.prescribedMedicines().size()).isEqualTo(1);
     }
-    //
-    //
-    // @Test
-    // @DirtiesContext
-    // void shouldDeleteAnExistingMedicine() {
-    //     ResponseEntity<Void> response = restTemplate
-    //             .withBasicAuth("100", "abc123")
-    //             .exchange("/prescribedMedicines/100", HttpMethod.DELETE, null, Void.class);
-    //     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    //
-    //     ResponseEntity<String> getResponse = restTemplate
-    //             .withBasicAuth("100", "abc123")
-    //             .getForEntity("/prescribedMedicines/100", String.class);
-    //     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    // }
-    //
-    //
-    // @Test
-    // void shouldNotDeleteAPrescribedMedicineThatDoesNotExist() {
-    //     ResponseEntity<Void> deleteResponse = restTemplate.withBasicAuth("100", "abc123")
-    //             .exchange("/prescribedMedicines/99999", HttpMethod.DELETE, null, Void.class);
-    //     assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    // }
-    //
-    // @Test
-    // void shouldNotAllowDeletionOfPrescribedMedicineTheyDoNotOwn() {
-    //     ResponseEntity<Void> deleteResponse = restTemplate
-    //             .withBasicAuth("100", "abc123")
-    //             .exchange("/prescribedMedicines/102", HttpMethod.DELETE, null, Void.class);
-    //     assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    //
-    //     ResponseEntity<String> getResponse = restTemplate
-    //             .withBasicAuth("101", "xyz789")
-    //             .getForEntity("/prescribedMedicines/102", String.class);
-    //     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-    // }
-    //
 
-    //
-    // @Test
-    // @DirtiesContext
-    // void shouldUpdateAnExistingPrescribedMedicine() {
-    //     PrescribedMedicineRequest prescribedMedicineUpdate = new PrescribedMedicineRequest(100L,2.0, LocalTime.of(8, 00, 00), 8, "100");
-    //     HttpEntity<PrescribedMedicineRequest> request = new HttpEntity<>(prescribedMedicineUpdate);
-    //     ResponseEntity<Void> response = restTemplate
-    //             .withBasicAuth("100", "abc123")
-    //             .exchange("/prescribedMedicines/100", HttpMethod.PUT, request, Void.class);
-    //
-    //     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    //     ResponseEntity<String> getResponse = restTemplate
-    //             .withBasicAuth("100", "abc123")
-    //             .getForEntity("/prescribedMedicines/100", String.class);
-    //     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-    //
-    //     DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
-    //     Number id = documentContext.read("$.id");
-    //     Number medicineId = documentContext.read("$.medicineId");
-    //     Number dosage = documentContext.read("$.dosage");
-    //     List<String> administrationTimes = documentContext.read("$.administrationTimes");
-    //     String owner = documentContext.read("$.owner");
-    //
-    //     assertThat(id).isNotNull();
-    //     assertThat(medicineId).isEqualTo(100);
-    //     assertThat(dosage).isEqualTo(2.0);
-    //     assertThat(administrationTimes).isEqualTo(stringList);
-    //     assertThat(owner).isEqualTo(100);
-    // }
-    //
-    // @Test
-    // void shouldNotUpdateAMedicineThatDoesNotExist() {
-    //     MedicineRequest unknownMedicine = new MedicineRequest("nonexistingMedicine", null, 0, -1);
-    //     HttpEntity<MedicineRequest> request = new HttpEntity<>(unknownMedicine);
-    //     ResponseEntity<Void> response = restTemplate
-    //             .withBasicAuth("100", "abc123")
-    //             .exchange("/prescribedMedicines/99999", HttpMethod.PUT, request, Void.class);
-    //     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    // }
+
+    @Test
+    @DirtiesContext
+    void shouldDeleteAnExistingMedicine() {
+        ResponseEntity<Void> response = restTemplate
+                .withBasicAuth("login", "password")
+                .exchange("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/100",
+                        HttpMethod.DELETE, null, Void.class);
+
+
+        ResponseEntity<String> getResponse = restTemplate
+                .withBasicAuth("login", "password")
+                .getForEntity("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/100",
+                        String.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+
+    @Test
+    void shouldNotDeleteAPrescribedMedicineThatDoesNotExist() {
+        ResponseEntity<Void> deleteResponse = restTemplate.
+                withBasicAuth("login", "password")
+                .exchange("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/99999",
+                        HttpMethod.DELETE, null, Void.class);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    void shouldNotAllowDeletionOfPrescribedMedicineTheyDoNotOwn() {
+        ResponseEntity<Void> deleteResponse = restTemplate
+                .withBasicAuth("login", "password")
+                .exchange("/families/101/familyMembers/103/prescriptions/103/prescribedMedicines/103", HttpMethod.DELETE, null, Void.class);
+        assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+
+        ResponseEntity<String> getResponse = restTemplate
+                .withBasicAuth("login3", "password3")
+                .getForEntity("/families/101/familyMembers/103/prescriptions/103/prescribedMedicines/103", String.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+
+
+    @Test
+    @DirtiesContext
+    void shouldUpdateAnExistingPrescribedMedicine() {
+        PrescribedMedicineRequest prescribedMedicineUpdate = new PrescribedMedicineRequest(100L,2.0, 3, 24, timesList);
+        HttpEntity<PrescribedMedicineRequest> request = new HttpEntity<>(prescribedMedicineUpdate);
+        ResponseEntity<Void> putResponse = restTemplate
+                .withBasicAuth("login", "password")
+                .exchange("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/100", HttpMethod.PUT, request, Void.class);
+
+
+        ResponseEntity<PrescribedMedicineResponse> getResponse = restTemplate
+                .withBasicAuth("login", "password")
+                .getForEntity("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/100",
+                        PrescribedMedicineResponse.class);
+
+        PrescribedMedicineResponse response = getResponse.getBody();
+        assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.id()).isNotNull();
+        assertThat(response.medicine()).isEqualTo(100);
+        assertThat(response.dosage()).isEqualTo(2.0);
+        assertThat(response.numberOfDoses()).isEqualTo(3);
+        assertThat(response.administrationTimes()).isEqualTo(timesList);
+        assertThat(response.dosageInterval()).isEqualTo(24);
+    }
+
+    @Test
+    void shouldNotUpdateAMedicineThatDoesNotExist() {
+        PrescribedMedicineRequest unknownMedicine = new PrescribedMedicineRequest(100L,2.0, 3, 24, timesList);
+        HttpEntity<PrescribedMedicineRequest> request = new HttpEntity<>(unknownMedicine);
+        ResponseEntity<Void> response = restTemplate
+                .withBasicAuth("login", "password")
+                .exchange("/families/100/familyMembers/100/prescriptions/100/prescribedMedicines/99999", HttpMethod.PUT, request, Void.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    }
 }
 
 
