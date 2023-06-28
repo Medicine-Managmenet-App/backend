@@ -22,21 +22,27 @@ public class Prescription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "prescription")
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PrescribedMedicine> prescribedMedicines;
 
-    private Long familyId;
+    @OneToOne
+    @JoinColumn(name = "family_member_id", insertable = false, updatable = false, referencedColumnName = "id")
+    private FamilyMember familyMember;
+
+    @Column(name = "family_member_id")
+    private Long familyMemberId;
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Prescription that = (Prescription) o;
-        return Objects.equals(id, that.id) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(familyId, that.familyId);
+        return Objects.equals(id, that.id) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(familyMember, that.familyMember) && Objects.equals(familyMemberId, that.familyMemberId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, prescribedMedicines, familyId);
+        return Objects.hash(id, prescribedMedicines, familyMember, familyMemberId);
     }
 }

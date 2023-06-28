@@ -24,7 +24,7 @@ public interface PrescriptionMapper {
     }
 
     default Prescription mapToEntity (PrescriptionRequest request) {
-        List<Long> medicinesIds = request.medicines();
+        List<Long> medicinesIds = request.prescribedMedicines();
         Prescription prescription = new Prescription();
         List<PrescribedMedicine> medicines = new ArrayList<>();
         for(long id : medicinesIds) {
