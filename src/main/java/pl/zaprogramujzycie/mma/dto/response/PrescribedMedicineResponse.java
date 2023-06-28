@@ -2,7 +2,6 @@ package pl.zaprogramujzycie.mma.dto.response;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 public record PrescribedMedicineResponse(

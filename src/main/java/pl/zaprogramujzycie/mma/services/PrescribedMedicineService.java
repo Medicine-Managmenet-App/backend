@@ -2,7 +2,6 @@ package pl.zaprogramujzycie.mma.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,10 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
-import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
-import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.entities.PrescribedMedicine;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.PrescribedMedicineRepository;
@@ -69,6 +66,7 @@ public class PrescribedMedicineService {
        return mapper.mapToList(prescribedMedicine);
     }
 
+    @Transactional
     public void partialUpdate(final long id, final PrescribedMedicineRequest request,
                                                     final Principal principal, final long prescriptionId,
                                                     final long familyId) throws NotFoundException {
@@ -83,7 +81,7 @@ public class PrescribedMedicineService {
     }
     @Transactional
     public void deleteById(final long id, final Principal principal,
-                           final long familyId, final long prescriptionId) throws NotFoundException {
+                           final long prescriptionId, final long familyId) throws NotFoundException {
         validator.checkUserPermissionsOnFamily(principal, familyId);
         PrescribedMedicine response = findEntity(id, prescriptionId);
         repository.deleteById(response.getId());

@@ -4,10 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.zaprogramujzycie.mma.entities.Family;
-import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.entities.PrescribedMedicine;
-import pl.zaprogramujzycie.mma.entities.Prescription;
 
 import java.util.Optional;
 

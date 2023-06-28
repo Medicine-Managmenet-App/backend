@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +21,7 @@ public class PrescribedMedicine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "medicine_id", insertable = false, updatable = false, referencedColumnName = "id")
     private Medicine medicine;
 

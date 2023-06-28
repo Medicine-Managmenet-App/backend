@@ -11,20 +11,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
-import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
-import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
 
 import java.net.URI;
 import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,11 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class PrescribedMedicineControllerTest {
     @Autowired
     TestRestTemplate restTemplate;
-
     final List<LocalTime> timesList = new ArrayList<>();
-    final List<String> stringList = new ArrayList<>();
-
-
 
     @BeforeEach
     void clearDatabase(@Autowired Flyway flyway) {
@@ -49,11 +39,6 @@ public class PrescribedMedicineControllerTest {
     @BeforeEach
     void setUp() {
 
-        DateTimeFormatter formater = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        stringList.add(formater.format(LocalTime.of(8, 00, 00)));
-        stringList.add(formater.format(LocalTime.of(16, 00, 00)));
-        stringList.add(formater.format(LocalTime.of(00, 00, 00)));
         timesList.add(LocalTime.of(00, 00, 00));
         timesList.add(LocalTime.of(8, 00, 00));
         timesList.add(LocalTime.of(16, 00, 00));

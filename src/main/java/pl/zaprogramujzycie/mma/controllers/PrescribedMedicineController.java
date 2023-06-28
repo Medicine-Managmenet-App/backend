@@ -7,10 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.zaprogramujzycie.mma.dto.request.PrescribedMedicineRequest;
-import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
 import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
@@ -120,7 +118,7 @@ public class PrescribedMedicineController {
                                                   @PathVariable final long id,
                                                   @PathVariable final long familyId,
                                                   @PathVariable final long prescriptionId) throws NotFoundException {
-        service.deleteById(id, principal, familyId, prescriptionId);
+        service.deleteById(id, principal, prescriptionId, familyId);
         return ResponseEntity.noContent().build();
     }
 }
