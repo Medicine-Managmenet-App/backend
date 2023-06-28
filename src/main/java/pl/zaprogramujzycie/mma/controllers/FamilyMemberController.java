@@ -54,7 +54,6 @@ public class FamilyMemberController {
                                                             @RequestBody final FamilyMemberRequest newFamilyMemberRequest,
                                                             @PathVariable final long familyId) throws NotFoundException{
         FamilyMemberResponse response = familyMemberService.save(newFamilyMemberRequest, principal, familyId);
-        System.out.println("response in controller: " + response.getId());
         return ResponseEntity.created(URI.create("/families/" + familyId +"/familyMembers/" + response.getId())).body(response);
     }
 
@@ -69,7 +68,6 @@ public class FamilyMemberController {
     })
     @GetMapping("/{id}")
     ResponseEntity<FamilyMemberResponse> findById(Principal principal, @PathVariable final long id, @PathVariable final long familyId) throws NotFoundException {
-        System.out.println("-------in controller---------");
         return ResponseEntity.ok(familyMemberService.findById(principal, id, familyId));
     }
 

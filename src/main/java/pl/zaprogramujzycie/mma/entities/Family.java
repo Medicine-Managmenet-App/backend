@@ -23,7 +23,6 @@ public class Family {
 
     @OneToMany(mappedBy = "family")
     private List<FamilyMember> members;
-
     @OneToMany(mappedBy = "family")
     private List<User> users;
 

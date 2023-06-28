@@ -22,8 +22,8 @@ public class User {
     @Column(unique = true)
     private String login;
     private String password;
+    @ManyToOne
     @JoinColumn(name = "family_id", insertable = false, updatable = false)
-    @ManyToOne(targetEntity = Family.class, fetch = FetchType.LAZY)
     private Family family;
 
     @Column(name = "family_id")

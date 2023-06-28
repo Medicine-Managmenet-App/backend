@@ -64,7 +64,7 @@ public class MedicineService {
 
     // ToDo if(PAO != 0) change expiration Date to (request timestamp + PAO)
     @Transactional
-    public void partialUpdate(final long id, final MedicineRequest request, final Principal principal, final long familyId) throws ChangeSetPersister.NotFoundException {
+    public void partialUpdate(final long id, final MedicineRequest request, final Principal principal, final long familyId) throws NotFoundException {
         validator.checkUserPermissionsOnFamily(principal, familyId);
         Medicine response = findEntity(id, familyId);
         if (request.name() != null) {response.setName(request.name());}
