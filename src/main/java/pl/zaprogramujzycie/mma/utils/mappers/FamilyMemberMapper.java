@@ -1,21 +1,28 @@
 package pl.zaprogramujzycie.mma.utils.mappers;
-
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import pl.zaprogramujzycie.mma.dto.request.FamilyMemberRequest;
-import pl.zaprogramujzycie.mma.dto.response.FamilyMemberResponse;
+import org.springframework.data.domain.Page;
+import pl.zaprogramujzycie.mma.dto.response.*;
 import pl.zaprogramujzycie.mma.entities.FamilyMember;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Mapper(componentModel = "familyMember")
 public interface FamilyMemberMapper {
 
-    @Mapping(target = "familyId", source = "family.id")
-    @Mapping(target = "prescriptionId", source = "prescription.id")
-    FamilyMemberResponse mapToResponse (FamilyMember family);
+    default FamilyMemberResponse mapToResponse(final FamilyMember family) {
+        return new FamilyMemberResponse(family.getId(), family.getName(), false);
+    }
 
-    @Mapping(target = "family.id", source = "familyId")
-    @Mapping(target = "prescription.id", source = "prescriptionId")
-    FamilyMember mapToEntity (FamilyMemberRequest request);
+    default FamilyMemberChildResponse mapToChildResponse(final FamilyMember child) {
+        return new FamilyMemberChildResponse(child.getId(), child.getName(), true, child.getAge(), child.getWeight());
+    }
 
+    default FamilyMembersResponse mapToList(final Page<FamilyMember> page) {
+        List<FamilyMemberResponse> members = new ArrayList<>();
+        for (FamilyMember member : page) {
+            members.add(mapToResponse(member));
+        }
+        return new FamilyMembersResponse(members);
+    }
 }
