@@ -6,10 +6,7 @@ import org.springframework.data.domain.Page;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
-import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicineResponse;
-import pl.zaprogramujzycie.mma.dto.response.PrescribedMedicinesResponse;
 import pl.zaprogramujzycie.mma.entities.Medicine;
-import pl.zaprogramujzycie.mma.entities.PrescribedMedicine;
 
 import java.util.ArrayList;
 import java.util.List;

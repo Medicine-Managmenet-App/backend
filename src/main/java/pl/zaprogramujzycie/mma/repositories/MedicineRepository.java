@@ -14,6 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<Medicine, Long>, PagingAndSortingRepository<Medicine, Long> {
-    Optional<Medicine> findByIdAndFamily(final long id, final Family family);
-    Page<Medicine> findByFamily(final Family family, final PageRequest page);
+    Optional<Medicine> findByIdAndFamilyId(final long id, final long familyId);
+    Page<Medicine> findByFamilyId(final long familyId, final PageRequest page);
 }

@@ -19,6 +19,7 @@ import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
+import pl.zaprogramujzycie.mma.utils.UserToFamilyValidator;
 import pl.zaprogramujzycie.mma.utils.mappers.FamilyMapper;
 import pl.zaprogramujzycie.mma.utils.mappers.MedicineMapper;
 
@@ -30,34 +31,31 @@ import java.util.Optional;
 public class MedicineService {
 
     private final MedicineRepository repository;
-    private final FamilyService familyService;
-    private final MedicineMapper mapper
-            = Mappers.getMapper(MedicineMapper.class);
-    private final FamilyMapper familyMapper
-            = Mappers.getMapper(FamilyMapper.class);
+    private final MedicineMapper mapper = Mappers.getMapper(MedicineMapper.class);
 
-    public MedicineService(MedicineRepository repository,
-                           FamilyService familyService) {
+    private final UserToFamilyValidator validator;
+
+    MedicineService(MedicineRepository repository, UserToFamilyValidator validator) {
         this.repository = repository;
-        this.familyService = familyService;
+        this.validator = validator;
     }
 
     @Transactional
     public MedicineResponse save(final MedicineRequest request, final Principal principal, final long familyId) throws NotFoundException {
-        Medicine newMedicine = mapper.mapToEntity(request);
-        FamilyResponse familyResponse = familyService.findById(principal, familyId);
-        newMedicine.setFamily(familyMapper.mapResponseToEntity(familyResponse));
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        Medicine newMedicine = new Medicine(null, request.name(), request.expirationDate(), request.periodAfterOpening(), familyId);
         return mapper.mapToResponse(repository.save(newMedicine));
     }
 
     public MedicineResponse findById(final long id, final Principal principal, final long familyId) throws NotFoundException {
-        Medicine response = findEntity(id, principal, familyId);
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        Medicine response = findEntity(id, familyId);
         return mapper.mapToResponse(response);
     }
 
     public MedicinesResponse findAll(final Principal principal, final Pageable pageable, final long familyId) throws NotFoundException {
-        FamilyResponse familyResponse = familyService.findById(principal, familyId);
-        Page<Medicine> medicine = repository.findByFamily(familyMapper.mapResponseToEntity(familyResponse), PageRequest.of(
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        Page<Medicine> medicine = repository.findByFamilyId(familyId, PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 pageable.getSortOr(Sort.by(Sort.Direction.ASC, "name"))));
@@ -67,27 +65,22 @@ public class MedicineService {
     // ToDo if(PAO != 0) change expiration Date to (request timestamp + PAO)
     @Transactional
     public void partialUpdate(final long id, final MedicineRequest request, final Principal principal, final long familyId) throws ChangeSetPersister.NotFoundException {
-        Medicine response = findEntity(id, principal, familyId);
-        if (request.name() != null) {
-            response.setName(request.name());
-        }
-        if (request.expirationDate() != null) {
-            response.setExpirationDate(request.expirationDate());
-        }
-        if (request.periodAfterOpening() != 0) {
-            response.setPeriodAfterOpening(request.periodAfterOpening());
-        }
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        Medicine response = findEntity(id, familyId);
+        if (request.name() != null) {response.setName(request.name());}
+        if (request.expirationDate() != null) {response.setExpirationDate(request.expirationDate());}
+        if (request.periodAfterOpening() != 0) {response.setPeriodAfterOpening(request.periodAfterOpening());}
+        repository.save(response);
     }
 
-    private Medicine findEntity(final long id, final Principal principal, final long familyId) throws NotFoundException {
-        FamilyResponse familyResponse = familyService.findById(principal, familyId);
-        Optional<Medicine> response = repository.findByIdAndFamily(id, familyMapper.mapResponseToEntity(familyResponse));
+    private Medicine findEntity(final long id, final long familyId) throws NotFoundException {
+        Optional<Medicine> response = repository.findByIdAndFamilyId(id, familyId);
         return response.orElseThrow(NotFoundException:: new);
     }
 
     public void deleteById(final long id, final Principal principal, final long familyId) throws NotFoundException {
-        familyService.findById(principal, familyId);
-        Medicine response = findEntity(id, principal, familyId);
+        validator.checkUserPermissionsOnFamily(principal, familyId);
+        Medicine response = findEntity(id,  familyId);
         try {
             repository.deleteById(response.getId());
         } catch (DataIntegrityViolationException ic) {
