@@ -22,13 +22,20 @@ public class User {
     @Column(unique = true)
     private String login;
     private String password;
-    @ManyToOne
-    @JoinColumn(name = "family_id", insertable = false, updatable = false)
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "family_id", insertable = false, updatable = false)
     private Family family;
 
     @Column(name = "family_id")
-    private long familyId;
+    private Long familyId;
 
+    public User(Long id, String login, String password, Long familyId) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.familyId = familyId;
+    }
 
     @Override
     public boolean equals(Object o) {

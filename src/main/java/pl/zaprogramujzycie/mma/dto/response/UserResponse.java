@@ -5,7 +5,8 @@ public record UserResponse(
 
         long id,
         String login,
-        long family
+        long family,
+        String password
 
 ) {
 }
