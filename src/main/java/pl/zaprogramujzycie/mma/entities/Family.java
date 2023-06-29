@@ -23,23 +23,24 @@ public class Family {
 
     @OneToMany(mappedBy = "family")
     private List<FamilyMember> members;
-    @OneToMany(mappedBy = "family")
-    private List<User> users;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> logins;
 
     @OneToMany(mappedBy = "family")
     private List<Medicine> medicines;
 
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Family family = (Family) o;
-        return Objects.equals(id, family.id) && Objects.equals(members, family.members) && Objects.equals(users, family.users);
+        return Objects.equals(id, family.id) && Objects.equals(members, family.members) && Objects.equals(logins, family.logins) && Objects.equals(medicines, family.medicines);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, members, users);
+        return Objects.hash(id, members, logins, medicines);
     }
 }

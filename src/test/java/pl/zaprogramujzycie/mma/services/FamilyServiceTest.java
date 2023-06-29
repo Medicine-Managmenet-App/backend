@@ -1,4 +1,5 @@
-package pl.zaprogramujzycie.mma.service;
+package pl.zaprogramujzycie.mma.services;
+
 
 
 import org.flywaydb.core.Flyway;
@@ -6,33 +7,62 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.annotation.DirtiesContext;
-import pl.zaprogramujzycie.mma.dto.request.FamilyRequest;
-import pl.zaprogramujzycie.mma.dto.request.PrescriptionRequest;
-import pl.zaprogramujzycie.mma.dto.response.PrescriptionResponse;
+import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.entities.Family;
-import pl.zaprogramujzycie.mma.services.FamilyService;
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 
-import java.net.URI;
+import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class FamilyServiceTest {
 
-    @Autowired
-    private FamilyService service;
 
+    @Autowired
+    FamilyService service;
+
+
+    Principal principal = () -> "login";
+
+    Family mockFamilyMultipleUsers;
+    Family mockFamilyOneUser;
+
+    @BeforeEach
+    void clearDatabase(@Autowired Flyway flyway) {
+        flyway.clean();
+        flyway.migrate();
+    }
+
+
+    @BeforeEach
+    public void setUp() {
+        mockFamilyMultipleUsers = new Family(500L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        mockFamilyOneUser = new Family(501L, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+
+        List<String> users = new ArrayList<>();
+        List<String> user = new ArrayList<>();
+
+        users.add("login");
+        users.add( "login2");
+        mockFamilyMultipleUsers.setLogins(users);
+
+        user.add("login");
+        mockFamilyOneUser.setLogins(user);
+    }
+
+
+    @Test
+    public void shouldGetFamilyById() throws NotFoundException {
+        FamilyResponse family = service.findById(principal, 100L);
+        assertThat(family.id()).isEqualTo(100L);
+        assertThat(family.users()).containsExactlyInAnyOrder("login", "login1", "login2");
+    }
 
     @Test
     public void shouldCreateFamily (){
@@ -40,14 +70,27 @@ public class FamilyServiceTest {
         assertThat(newFamily.getId()).isNotNull();
         assertThat(newFamily.getId()).isEqualTo(1);
     }
+
     @Test
-    public void shouldDeleteUserFromList () {
-        //ToDo write method body
+    public void shouldDeleteUserFromList () throws NotFoundException {
+        service.removeUserFromTheFamily(100L, "login");
+        FamilyResponse family = service.findById(principal, 100L);
+        assertThat(family.users()).containsExactlyInAnyOrder("login1", "login2");
+
     }
 
     @Test
-    void shouldDeleteFamilyWhenUsersListIsEmpty() {
-        //ToDo add method body
+    void shouldDeleteFamilyWhenUsersListIsEmpty() throws NotFoundException {
+        Principal principal2 = () -> "login3";
+        service.removeUserFromTheFamily(101, "login3");
+        try{
+            FamilyResponse family = service.findById(principal2, 101L);
+        } catch (NotFoundException ex){
+            assertThat(ex.getMessage()).contains("NotFound");
+        } catch (JpaObjectRetrievalFailureException jpa) {
+            assertThat(jpa.getMessage()).contains("Unable to find");
+        }
+
     }
 
 

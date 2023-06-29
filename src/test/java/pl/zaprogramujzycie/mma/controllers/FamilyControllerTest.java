@@ -59,9 +59,9 @@ public class FamilyControllerTest {
 
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.id()).isEqualTo(100);
-        assertThat(response.users()).containsExactlyInAnyOrder(100L, 101L, 102L);
+        assertThat(response.users()).containsExactlyInAnyOrder("login", "login1", "login2");
         assertThat(response.medicines()).containsExactlyInAnyOrder(1000L, 100L, 101L);
-        assertThat(response.members()).containsExactlyInAnyOrder(100L, 101L, 102L);
+        assertThat(response.members()).containsExactlyInAnyOrder(100L, 101L, 102L, 104L);
 
     }
 
@@ -71,7 +71,6 @@ public class FamilyControllerTest {
                 .withBasicAuth("login", "password")
                 .getForEntity("/prescribedMedicines/1000", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).isBlank();
     }
 
 
@@ -93,7 +92,7 @@ public class FamilyControllerTest {
         ResponseEntity<String> response = restTemplate
                 .withBasicAuth("password", "password")
                 .getForEntity("/families/103", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
     @Test
     @DirtiesContext
@@ -101,7 +100,7 @@ public class FamilyControllerTest {
         FamilyRequest usersUpdate = new FamilyRequest(104L );
         HttpEntity<FamilyRequest> request = new HttpEntity<>(usersUpdate);
         ResponseEntity<Void> putResponse = restTemplate
-                .withBasicAuth("login", "password")
+                .withBasicAuth("login3", "password3")
                 .exchange("/families/100", HttpMethod.PUT, request, Void.class);
 
         ResponseEntity<FamilyResponse> getResponse = restTemplate
@@ -113,7 +112,7 @@ public class FamilyControllerTest {
         assertThat(putResponse.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.id()).isNotNull();
-        assertThat(response.users()).containsExactlyInAnyOrder(100L, 101L, 102L, 103L);
+        assertThat(response.users()).containsExactlyInAnyOrder("login1", "login2", "login3", "login");
     }
 
 

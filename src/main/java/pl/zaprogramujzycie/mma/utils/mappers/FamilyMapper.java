@@ -20,64 +20,58 @@ public interface FamilyMapper {
         for (FamilyMember fM : members) {
             membersIds.add(fM.getId());
         }
-        List<Long> usersIds = new ArrayList<>();
-        List<User> users = family.getUsers();
-        for (User u : users) {
-            usersIds.add(u.getId());
-        }
+        List<String> logins = family.getLogins();
+
         List<Long> medicinesIds = new ArrayList<>();
         List<Medicine> medicines = family.getMedicines();
         for (Medicine m : medicines) {
             medicinesIds.add(m.getId());
         }
-        return new FamilyResponse(family.getId(), membersIds, usersIds, medicinesIds);
+        return new FamilyResponse(family.getId(), membersIds, logins, medicinesIds);
     }
 
-    default Family mapToEntity (FamilyRequest request) {
-        Family family = new Family();
-
-        List<Long> membersIds = request.members();
-        List<Long> usersIds = request.users();
-        List<Long> medicinesIds = request.medicines();
-
-        List<FamilyMember> members = new ArrayList<>();
-        List<User> users = new ArrayList<>();
-        List<Medicine> medicines = new ArrayList<>();
-
-        for(long id : membersIds) {
-            members.add(mapToMember(id));
-        }
-        for(long id : usersIds) {
-            users.add(mapToUser(id));
-        }
-        for(long id : medicinesIds) {
-            medicines.add(mapToMedicine(id));
-        }
-
-        return new Family(null, members, users, medicines);
-    }
+    // default Family mapToEntity (FamilyRequest request) {
+    //     Family family = new Family();
+    //
+    //     // List<Long> membersIds = request.members();
+    //     // List<Long> usersIds = request.users();
+    //     // List<Long> medicinesIds = request.medicines();
+    //
+    //     List<FamilyMember> members = new ArrayList<>();
+    //     List<User> users = new ArrayList<>();
+    //     List<Medicine> medicines = new ArrayList<>();
+    //
+    //     for(long id : membersIds) {
+    //         members.add(mapToMember(id));
+    //     }
+    //     for(long id : usersIds) {
+    //         users.add(mapToUser(id));
+    //     }
+    //     for(long id : medicinesIds) {
+    //         medicines.add(mapToMedicine(id));
+    //     }
+    //
+    //     return new Family(null, members, users, medicines);
+    // }
 
     default Family mapResponseToEntity (FamilyResponse request) {
 
         List<Long> membersIds = request.members();
-        List<Long> usersIds = request.users();
+        List<String> usersIds = request.users();
         List<Long> medicinesIds = request.medicines();
 
         List<FamilyMember> members = new ArrayList<>();
-        List<User> users = new ArrayList<>();
         List<Medicine> medicines = new ArrayList<>();
 
         for(long id : membersIds) {
             members.add(mapToMember(id));
         }
-        for(long id : usersIds) {
-            users.add(mapToUser(id));
-        }
+
         for(long id : medicinesIds) {
             medicines.add(mapToMedicine(id));
         }
 
-        return new Family(request.id(), members, users, medicines);
+        return new Family(request.id(), members, usersIds, medicines);
     }
     @Mapping(target = "id", source = "id")
     FamilyMember mapToMember (Long id);

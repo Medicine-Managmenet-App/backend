@@ -1,5 +1,6 @@
 package pl.zaprogramujzycie.mma.services;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -41,13 +42,14 @@ public class FamilyService {
     private final UserMapper userMapper
             = Mappers.getMapper(UserMapper.class);
 
-    FamilyService(FamilyRepository repository, UserToFamilyValidator validator, UserService userService) {
+
+    public FamilyService(FamilyRepository repository, UserToFamilyValidator validator, UserService userService) {
         this.repository = repository;
         this.validator = validator;
         this.userService = userService;
     }
 
-    //This method is only used in the background during creation of User, it returns Family Entity that goes into user service.
+    //This method is only used in the background during creation of User, it returns Family Entity that goes into user services.
     @Transactional
     public Family create() {
         Family newFamily = new Family(null, new ArrayList<>(),
@@ -55,6 +57,7 @@ public class FamilyService {
         return repository.save(newFamily);
     }
 
+    @Transactional
     public FamilyResponse findById(final Principal principal, final long id) throws NotFoundException {
         validator.checkUserPermissionsOnFamily(principal, id);
         Family response = findEntity(id);
@@ -67,18 +70,21 @@ public class FamilyService {
     }
 
     @Transactional
-    public void adUserToTheFamily(final long id, final FamilyRequest request, final Principal principal) throws NotFoundException {
-        User user = userMapper.mapResponseToEntity(userService.findByLogin(principal.getName()));
-        Family response = findEntity(id);
-        response.getUsers().add(user);
-        repository.save(response);
+    public void addUserToTheFamily(final long id, final FamilyRequest request, final Principal principal) throws NotFoundException {
+        Family family = findEntity(id);
+        String userLogin = principal.getName();
+        List<String> users = family.getLogins();
+        users.add(userLogin);
+        family.setLogins(users);
+        repository.save(family);
     }
 
-    public void removeUserFromTheFamily (final long id, final long userId) throws NotFoundException {
-        User user = userMapper.mapResponseToEntity(userService.findById(userId));
-        Family response = findEntity(id);
-        List<User> users =  response.getUsers();
-        users.remove(user);
+    @Transactional
+    public void removeUserFromTheFamily (final long id, final String userId) throws NotFoundException {
+        Family response = findEntity(id);;
+        List<String> users =  response.getLogins();
+        System.out.println();
+        users.remove(userId);
         if (users.isEmpty()) {deleteById(id);}
     }
 

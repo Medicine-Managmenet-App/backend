@@ -62,7 +62,7 @@ public class FamilyController {
     })
     @PutMapping("/{id}")
     ResponseEntity<FamilyResponse> updateFamily(Principal principal, @PathVariable final long id, @RequestBody final FamilyRequest request) throws NotFoundException {
-        familyService.adUserToTheFamily(id, request, principal);
+        familyService.addUserToTheFamily(id, request, principal);
         return ResponseEntity.noContent().build();
     }
 
