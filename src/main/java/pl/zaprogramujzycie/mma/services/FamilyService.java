@@ -1,20 +1,12 @@
 package pl.zaprogramujzycie.mma.services;
 
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zaprogramujzycie.mma.dto.request.FamilyRequest;
-import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
-import pl.zaprogramujzycie.mma.dto.response.UserResponse;
 import pl.zaprogramujzycie.mma.entities.Family;
-import pl.zaprogramujzycie.mma.entities.FamilyMember;
-import pl.zaprogramujzycie.mma.entities.Medicine;
-import pl.zaprogramujzycie.mma.entities.Prescription;
-import pl.zaprogramujzycie.mma.entities.User;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.FamilyRepository;
 import pl.zaprogramujzycie.mma.utils.UserToFamilyValidator;
@@ -34,8 +26,6 @@ public class FamilyService {
     private final FamilyRepository repository;
     private final UserToFamilyValidator validator;
 
-    private final UserService userService;
-
     private final FamilyMapper mapper
             = Mappers.getMapper(FamilyMapper.class);
 
@@ -43,17 +33,18 @@ public class FamilyService {
             = Mappers.getMapper(UserMapper.class);
 
 
-    public FamilyService(FamilyRepository repository, UserToFamilyValidator validator, UserService userService) {
+    public FamilyService(FamilyRepository repository, UserToFamilyValidator validator) {
         this.repository = repository;
         this.validator = validator;
-        this.userService = userService;
     }
 
     //This method is only used in the background during creation of User, it returns Family Entity that goes into user services.
     @Transactional
-    public Family create() {
+    public Family create(final String userLogin) {
+        List<String> users = new ArrayList<>();
+        users.add(userLogin);
         Family newFamily = new Family(null, new ArrayList<>(),
-                new ArrayList<>(), new ArrayList<>());
+                users, new ArrayList<>());
         return repository.save(newFamily);
     }
 
@@ -81,9 +72,8 @@ public class FamilyService {
 
     @Transactional
     public void removeUserFromTheFamily (final long id, final String userId) throws NotFoundException {
-        Family response = findEntity(id);;
+        Family response = findEntity(id);
         List<String> users =  response.getLogins();
-        System.out.println();
         users.remove(userId);
         if (users.isEmpty()) {deleteById(id);}
     }

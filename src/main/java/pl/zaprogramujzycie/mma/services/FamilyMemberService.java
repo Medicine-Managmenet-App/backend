@@ -28,7 +28,7 @@ public class FamilyMemberService {
     private final UserToFamilyValidator validator;
     private final FamilyMemberMapper mapper = Mappers.getMapper(FamilyMemberMapper.class);
 
-    FamilyMemberService(FamilyMemberRepository repository, UserToFamilyValidator validator) {
+    public FamilyMemberService(FamilyMemberRepository repository, UserToFamilyValidator validator) {
         this.repository = repository;
         this.validator = validator;
     }

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,14 +12,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
-import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.entities.Medicine;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.MedicineRepository;
 import pl.zaprogramujzycie.mma.utils.UserToFamilyValidator;
-import pl.zaprogramujzycie.mma.utils.mappers.FamilyMapper;
 import pl.zaprogramujzycie.mma.utils.mappers.MedicineMapper;
 
 import java.security.Principal;
@@ -35,7 +32,7 @@ public class MedicineService {
 
     private final UserToFamilyValidator validator;
 
-    MedicineService(MedicineRepository repository, UserToFamilyValidator validator) {
+    public MedicineService(MedicineRepository repository, UserToFamilyValidator validator) {
         this.repository = repository;
         this.validator = validator;
     }

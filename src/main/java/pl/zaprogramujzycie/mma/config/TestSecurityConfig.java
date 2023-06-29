@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,13 +22,15 @@ public class TestSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
-        return http.authorizeHttpRequests()
-                .antMatchers("/families/**", "/medicines/**", "/prescribedMedicines/**")
-                .hasRole("MEDICINE-OWNER")
-                .and()
-                .csrf().disable()
+        return http.csrf().disable()
+                .authorizeHttpRequests((authz) -> authz
+                                .anyRequest().authenticated())
                 .httpBasic()
                 .and().build();
+    }
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/users");
     }
 
 
@@ -59,6 +62,11 @@ public class TestSecurityConfig {
                 .password(passwordEncoder.encode("password3"))
                 .roles("MEDICINE-OWNER")
                 .build();
-        return new InMemoryUserDetailsManager(user, user1, user2, user3);
+        UserDetails user4 = users
+                .username("newLogin")
+                .password(passwordEncoder.encode("newPassword"))
+                .roles("MEDICINE-OWNER")
+                .build();
+        return new InMemoryUserDetailsManager(user, user1, user2, user3, user4);
     }
 }

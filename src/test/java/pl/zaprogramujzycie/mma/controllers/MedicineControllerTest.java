@@ -172,14 +172,6 @@ public class MedicineControllerTest {
     }
 
     @Test
-    void shouldRejectUsersWhoAreNotMedicineOwners() {
-        ResponseEntity<MedicineResponse> response = restTemplate
-                .withBasicAuth("login1", "password1")
-                .getForEntity("/families/100/medicines/100", MedicineResponse.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-    }
-
-    @Test
     void shouldNotAllowAccessToMedicinesTheyDoNotOwn() {
         ResponseEntity<MedicineResponse> response = restTemplate
                 .withBasicAuth("login", "password")

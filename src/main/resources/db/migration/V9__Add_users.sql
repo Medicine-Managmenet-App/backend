@@ -6,5 +6,5 @@ insert into users (id, login, password, family_id) values (103, 'login3', 'passw
 insert into family_logins (family_id, logins) values (100, 'login');
 insert into family_logins (family_id, logins) values (100, 'login1');
 insert into family_logins (family_id, logins) values (100, 'login2');
-insert into family_logins (family_id, logins) values (103, 'login3');
+insert into family_logins (family_id, logins) values (101, 'login3');
 

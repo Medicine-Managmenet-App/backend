@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.test.annotation.DirtiesContext;
 import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.entities.Family;
@@ -28,7 +27,7 @@ public class FamilyServiceTest {
     FamilyService service;
 
 
-    Principal principal = () -> "login";
+    final Principal principal = () -> "login";
 
     Family mockFamilyMultipleUsers;
     Family mockFamilyOneUser;
@@ -66,16 +65,17 @@ public class FamilyServiceTest {
 
     @Test
     public void shouldCreateFamily (){
-        Family newFamily = service.create();
+        Family newFamily = service.create("login5");
         assertThat(newFamily.getId()).isNotNull();
         assertThat(newFamily.getId()).isEqualTo(1);
+        assertThat(newFamily.getLogins()).containsExactlyInAnyOrder("login5");
     }
 
     @Test
     public void shouldDeleteUserFromList () throws NotFoundException {
-        service.removeUserFromTheFamily(100L, "login");
+        service.removeUserFromTheFamily(100L, "login1");
         FamilyResponse family = service.findById(principal, 100L);
-        assertThat(family.users()).containsExactlyInAnyOrder("login1", "login2");
+        assertThat(family.users()).containsExactlyInAnyOrder("login", "login2");
 
     }
 
@@ -86,50 +86,8 @@ public class FamilyServiceTest {
         try{
             FamilyResponse family = service.findById(principal2, 101L);
         } catch (NotFoundException ex){
-            assertThat(ex.getMessage()).contains("NotFound");
-        } catch (JpaObjectRetrievalFailureException jpa) {
-            assertThat(jpa.getMessage()).contains("Unable to find");
+            assertThat(ex.getClass()).isEqualTo(NotFoundException.class);
         }
-
     }
-
-
-    // @Test
-    // @DirtiesContext
-    // void shouldDeleteAnExistingFamily() {
-    //     ResponseEntity<Void> response = restTemplate
-    //             .withBasicAuth("login", "password")
-    //             .exchange("/families/100", HttpMethod.DELETE, null, Void.class);
-    //
-    //     ResponseEntity<String> getResponse = restTemplate
-    //             .withBasicAuth("login", "password")
-    //             .getForEntity("/families/100", String.class);
-    //     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-    //     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    // }
-    //
-    //
-    // @Test
-    // void shouldNotDeleteAFamilyThatDoesNotExist() {
-    //     ResponseEntity<Void> deleteResponse = restTemplate
-    //             .withBasicAuth("login", "password")
-    //             .exchange("/prescribedMedicines/99999", HttpMethod.DELETE, null, Void.class);
-    //     assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    // }
-    //
-    // @Test
-    // void shouldNotAllowDeletionOfFamilyTheyDoNotOwn() {
-    //     ResponseEntity<Void> deleteResponse = restTemplate
-    //             .withBasicAuth("login", "password")
-    //             .exchange("/families/103", HttpMethod.DELETE, null, Void.class);
-    //     assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-    //
-    //     ResponseEntity<String> getResponse = restTemplate
-    //             .withBasicAuth("login3", "password3")
-    //             .getForEntity("/families/103", String.class);
-    //     assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-    // }
-
-
 
 }

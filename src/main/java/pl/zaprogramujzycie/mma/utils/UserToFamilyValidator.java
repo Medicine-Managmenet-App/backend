@@ -4,27 +4,29 @@ package pl.zaprogramujzycie.mma.utils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pl.zaprogramujzycie.mma.dto.response.UserResponse;
+import pl.zaprogramujzycie.mma.entities.Family;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
-import pl.zaprogramujzycie.mma.services.UserService;
+import pl.zaprogramujzycie.mma.repositories.FamilyRepository;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserToFamilyValidator {
-    private final UserService userService;
+    private final FamilyRepository familyRepository;
 
 
-    UserToFamilyValidator(UserService userService) {
-        this.userService = userService;
+    UserToFamilyValidator(FamilyRepository familyRepository) {
+        this.familyRepository = familyRepository;
     }
-    //ToDo move to user service
+    //ToDo move to user services
 
     @Transactional
     public void checkUserPermissionsOnFamily(final Principal principal, final long familyId) throws NotFoundException {
         String login = principal.getName();
-        UserResponse user = userService.findByLogin(login);
-        long userFamilyId = user.family();
-        if (userFamilyId != familyId) {throw new NotFoundException();}
+        Optional<Family> optional = familyRepository.findById(familyId);
+        List<String> authorizedUsers = optional.orElseThrow(NotFoundException::new).getLogins();
+        if(!authorizedUsers.contains(login)) {throw new NotFoundException();}
     }
 }

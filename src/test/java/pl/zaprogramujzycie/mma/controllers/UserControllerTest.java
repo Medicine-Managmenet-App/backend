@@ -1,9 +1,7 @@
 package pl.zaprogramujzycie.mma.controllers;
 
-import org.apache.coyote.Response;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,20 +11,13 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.zaprogramujzycie.mma.dto.request.ChangeFamilyRequest;
-import pl.zaprogramujzycie.mma.dto.request.MedicineRequest;
 import pl.zaprogramujzycie.mma.dto.request.UserRequest;
 import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
-import pl.zaprogramujzycie.mma.dto.response.MedicinesResponse;
 import pl.zaprogramujzycie.mma.dto.response.UserResponse;
-import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 
 import java.net.URI;
-import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -80,12 +71,12 @@ public class UserControllerTest {
                 .postForEntity("/users", newUser, Void.class);
 
         URI locationOfNewUser = createResponse.getHeaders().getLocation();
-        System.out.println("new URI: " + locationOfNewUser);
+
         ResponseEntity<UserResponse> getResponse = restTemplate
                 .withBasicAuth("newLogin", "newPassword")
                 .getForEntity(locationOfNewUser, UserResponse.class);
         UserResponse response = getResponse.getBody();
-        System.out.println("password in for new usser "+ response.password());
+
         assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.id()).isNotNull();

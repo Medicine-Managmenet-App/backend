@@ -8,19 +8,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.zaprogramujzycie.mma.dto.request.ChangeFamilyRequest;
-import pl.zaprogramujzycie.mma.dto.request.PrescriptionRequest;
 import pl.zaprogramujzycie.mma.dto.request.UserRequest;
 import pl.zaprogramujzycie.mma.dto.response.UserResponse;
 import pl.zaprogramujzycie.mma.entities.Family;
-import pl.zaprogramujzycie.mma.entities.Medicine;
-import pl.zaprogramujzycie.mma.entities.Prescription;
 import pl.zaprogramujzycie.mma.entities.User;
 import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
 import pl.zaprogramujzycie.mma.repositories.UserRepository;
 import pl.zaprogramujzycie.mma.utils.mappers.UserMapper;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,7 +25,7 @@ public class UserService {
 
     private final UserRepository repository;
     private final FamilyService familyService;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserMapper mapper
             = Mappers.getMapper(UserMapper.class);
