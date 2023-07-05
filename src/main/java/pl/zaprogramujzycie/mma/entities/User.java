@@ -28,11 +28,23 @@ public class User {
     @Column(unique = true)
     private String login;
     private String password;
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name= "family_id", insertable = false, updatable = false)
     private Family family;
 
+    @Column(name = "family_id")
+    private Long familyId;
+
+    public User(Long id, String login, String password, Long familyId) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.familyId = familyId;
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final User user = (User) o;

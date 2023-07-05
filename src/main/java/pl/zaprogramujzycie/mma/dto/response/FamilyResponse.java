@@ -4,7 +4,8 @@ import java.util.List;
 
 public record FamilyResponse(
         long id,
-        List<FamilyMemberResponse> members,
-        List<UserResponse> users
+        List<Long> members,
+        List<String> users,
+        List<Long> medicines
 ) {
 }

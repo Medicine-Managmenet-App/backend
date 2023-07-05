@@ -8,6 +8,5 @@ public record UserRequest(
         String login,
         @NotBlank
         String password
-
 ) {
 }

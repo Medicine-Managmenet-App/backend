@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import pl.zaprogramujzycie.mma.entities.PrescribedMedicine;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,23 +27,28 @@ public class Prescription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToMany
-    @JoinColumn(referencedColumnName = "id")
-    private List<Medicine> medicines;
-    @OneToMany
-    @JoinColumn(referencedColumnName = "id")
+
+    @OneToMany(mappedBy = "prescription", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PrescribedMedicine> prescribedMedicines;
 
+    @OneToOne
+    @JoinColumn(name = "family_member_id", insertable = false, updatable = false, referencedColumnName = "id")
+    private FamilyMember familyMember;
+
+    @Column(name = "family_member_id")
+    private Long familyMemberId;
+
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Prescription that = (Prescription) o;
-        return Objects.equals(id, that.id) && Objects.equals(medicines, that.medicines) && Objects.equals(prescribedMedicines, that.prescribedMedicines);
+        return Objects.equals(id, that.id) && Objects.equals(prescribedMedicines, that.prescribedMedicines) && Objects.equals(familyMember, that.familyMember) && Objects.equals(familyMemberId, that.familyMemberId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, medicines, prescribedMedicines);
+        return Objects.hash(id, prescribedMedicines, familyMember, familyMemberId);
     }
 }

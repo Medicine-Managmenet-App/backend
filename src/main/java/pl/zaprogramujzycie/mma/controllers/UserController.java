@@ -7,23 +7,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
+import pl.zaprogramujzycie.mma.dto.request.ChangeFamilyRequest;
 import pl.zaprogramujzycie.mma.dto.request.UserRequest;
 import pl.zaprogramujzycie.mma.dto.response.UserResponse;
-import pl.zaprogramujzycie.mma.entities.User;
-import pl.zaprogramujzycie.mma.repositories.UserRepository;
+import pl.zaprogramujzycie.mma.exceptions.NotFoundException;
+import pl.zaprogramujzycie.mma.services.UserService;
 
+import java.net.URI;
 import java.security.Principal;
 
 
@@ -32,9 +32,12 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @Profile("prod")
 public class UserController {
+  
+    final UserService service;
 
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    public UserController(UserService service) {
+        this.service = service;
+    }
 
     @Operation(
             description = "Create new user",
@@ -46,13 +49,9 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
-        //TODO: CHANGE IT WHEN SERVICE WAS CREATED
-        userRepository.save(User.builder()
-                .login("admin")
-                .password(passwordEncoder.encode("tajnedane123!"))
-                .build());
-        return null;
+    public ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
+        UserResponse response = service.save(newUserRequest);
+        return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
     }
 
     @Operation(
@@ -65,8 +64,22 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable final long id) {
-        return null;
+    public ResponseEntity<UserResponse> findById(Principal principal, @PathVariable final long id) throws NotFoundException {
+        return ResponseEntity.ok(service.findById(principal, id));
+    }
+
+    @Operation(
+            description = "Find user by login, needed to send invitation for to join family",
+            tags = "Users"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User found"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @GetMapping
+    public ResponseEntity<UserResponse> findByLogin(@RequestParam final String login) throws NotFoundException {
+        return ResponseEntity.ok(service.findByLogin(login));
     }
 
     @Operation(
@@ -79,9 +92,10 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping("/{name}")
-    private ResponseEntity<Void> updateUserName(@AuthenticationPrincipal final Principal principal, @PathVariable final String name) {
-        return null;
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> changeConnectedFamily(final Principal principal, @PathVariable final long id, @RequestBody ChangeFamilyRequest family) throws NotFoundException {
+        service.changeFamily(id, principal, family);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -94,9 +108,10 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PatchMapping("/{password}")
-    private ResponseEntity<Void> updateUserPassword(@AuthenticationPrincipal final Principal principal, @PathVariable final String password) {
-        return null;
+    @PutMapping("/{id}/passwordChange")
+    private ResponseEntity<Void> updateUserPassword(final Principal principal, @PathVariable final long id, @RequestBody UserRequest changePasswordRequest) throws NotFoundException {
+        service.changePassword(id, principal, changePasswordRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -108,9 +123,10 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public static ResponseEntity<Void> deleteUser(@AuthenticationPrincipal final Principal principal) {
-        return null;
+    public ResponseEntity<Void> deleteUser(final Principal principal, @PathVariable final long id) throws NotFoundException {
+        service.deleteById(id, principal);
+        return ResponseEntity.noContent().build();
     }
 }
