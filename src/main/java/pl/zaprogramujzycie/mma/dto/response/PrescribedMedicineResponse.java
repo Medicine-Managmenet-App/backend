@@ -1,14 +1,18 @@
 package pl.zaprogramujzycie.mma.dto.response;
 
-import java.time.OffsetDateTime;
+import javax.validation.constraints.NotNull;
+import java.time.LocalTime;
 import java.util.List;
 
 public record PrescribedMedicineResponse(
 
         long id,
-        MedicineResponse medicine,
+        long medicine,
         double dosage,
-        List<OffsetDateTime> administrationTimes
+        int numberOfDoses,
+        int dosageInterval,
+        @NotNull
+        List<LocalTime> administrationTimes
 
 ) {
 }

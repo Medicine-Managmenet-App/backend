@@ -5,8 +5,7 @@ import java.util.List;
 public record PrescriptionResponse(
 
         long id,
-        List<MedicineResponse> medicines,
-        List<PrescribedMedicineResponse> prescribedMedicines
+        List<Long> prescribedMedicines
 
 ) {
 }
