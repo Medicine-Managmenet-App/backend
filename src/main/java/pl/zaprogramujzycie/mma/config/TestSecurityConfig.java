@@ -23,7 +23,7 @@ public class TestSecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         return http.csrf().disable()
-                .authorizeHttpRequests((authz) -> authz
+                .authorizeHttpRequests((auth) -> auth
                                 .anyRequest().authenticated())
                 .httpBasic()
                 .and().build();
