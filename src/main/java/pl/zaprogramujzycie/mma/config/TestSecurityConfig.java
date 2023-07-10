@@ -30,7 +30,7 @@ public class TestSecurityConfig {
     }
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers("/users", "/v3/api-docs", "/v2/api-docs",
+        return (web) -> web.ignoring().antMatchers("/users", "/v3/api-docs/**", "/v2/api-docs",
                 "/configuration/ui", "/swagger-ui.html", "swagger-resources", "/swagger-resources/**", "/configuration/security",
                 "/swagger-ui/**", "swagger-ui/index.html");
     }
