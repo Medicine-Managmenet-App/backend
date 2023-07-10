@@ -29,7 +29,6 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
 @Profile("prod")
 public class UserController {
   
