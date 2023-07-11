@@ -34,12 +34,13 @@ public class TestSecurityConfig {
                 "/configuration/ui", "/swagger-ui.html", "swagger-resources", "/swagger-resources/**", "/configuration/security",
                 "/swagger-ui/**", "swagger-ui/index.html",
 
-                "/families", "families/**",
-                "/users/**",
-                "/familyMembers", "/familyMembers/**",
-                "/medicines", "/medicines/**",
-                "/prescriptions", "/prescriptions/**",
-                "/prescribedMedicines", "/prescribedMedicines/**");
+                // "/families", "/families/**",
+                // "/users/**",
+                // "/familyMembers", "/familyMembers/**",
+                // "/medicines", "/medicines/**",
+                // "/prescriptions", "/prescriptions/**",
+                // "/prescribedMedicines", "/prescribedMedicines/**",
+                "/console", "/console/**");
     }
 
 

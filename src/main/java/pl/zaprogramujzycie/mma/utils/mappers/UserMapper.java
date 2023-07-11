@@ -9,10 +9,11 @@ import pl.zaprogramujzycie.mma.entities.User;
 
 @Mapper(componentModel = "user")
 public interface UserMapper {
-    @Mapping(target="family", source="family.id")
+    @Mapping(target="family", source="familyId")
     UserResponse mapToResponse (final User user);
 
     User mapToEntity (final UserRequest request);
+
     @Mapping(target="family.id", source="family")
     User mapResponseToEntity (final UserResponse response);
 }

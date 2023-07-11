@@ -41,7 +41,6 @@ public class UserService {
         Family family = familyService.create(request.login());
         User newUser = new User(null, request.login(),
                 passwordEncoder.encode(request.password()), family.getId());
-        repository.save(newUser);
         return mapper.mapToResponse(repository.save(newUser));
     }
 
