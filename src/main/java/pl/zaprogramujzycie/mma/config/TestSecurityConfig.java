@@ -33,13 +33,6 @@ public class TestSecurityConfig {
         return (web) -> web.ignoring().antMatchers("/users", "/v3/api-docs/**", "/v2/api-docs",
                 "/configuration/ui", "/swagger-ui.html", "swagger-resources", "/swagger-resources/**", "/configuration/security",
                 "/swagger-ui/**", "swagger-ui/index.html",
-
-                // "/families", "/families/**",
-                // "/users/**",
-                // "/familyMembers", "/familyMembers/**",
-                // "/medicines", "/medicines/**",
-                // "/prescriptions", "/prescriptions/**",
-                // "/prescribedMedicines", "/prescribedMedicines/**",
                 "/console", "/console/**");
     }
 
