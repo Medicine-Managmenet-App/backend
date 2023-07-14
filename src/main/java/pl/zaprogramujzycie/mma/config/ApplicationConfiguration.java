@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties("myConfig")
+@ConfigurationProperties(prefix = "myConfig")
 public class ApplicationConfiguration {
 
     private OpenApi openApi = new OpenApi();
