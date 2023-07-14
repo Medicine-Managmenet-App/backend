@@ -37,6 +37,7 @@ public class ProdSecurityConfig {
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
         return http
+                .cors()
                 // .cors().configurationSource(request -> {
                 //     final CorsConfiguration cors = new CorsConfiguration();
                 //     cors.setAllowedOrigins(List.of("*"));
@@ -45,7 +46,7 @@ public class ProdSecurityConfig {
                 //     cors.setExposedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization"));
                 //     return cors;
                 // })
-                // .and()
+                .and()
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .anyRequest().authenticated()
@@ -54,7 +55,6 @@ public class ProdSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(tokenAuthorizationFilter, SecurityContextHolderAwareRequestFilter.class)
-                // .cors(cors -> cors.disable())
                 .build();
     }
 
