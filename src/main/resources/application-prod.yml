@@ -8,8 +8,9 @@ spring:
     console:
       enabled: true
       path: '/console'
+
   datasource:
-    driver-class-name: org.h2.Driver
+    driver-class-name: org. postgresql
     url: ${JDBC_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
