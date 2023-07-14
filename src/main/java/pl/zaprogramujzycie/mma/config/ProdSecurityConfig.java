@@ -51,7 +51,7 @@ public class ProdSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilterBefore(tokenAuthorizationFilter, SecurityContextHolderAwareRequestFilter.class)
-                .cors(cors -> cors.disable())
+                // .cors(cors -> cors.disable())
                 .build();
     }
 
