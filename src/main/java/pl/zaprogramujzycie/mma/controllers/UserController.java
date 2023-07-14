@@ -50,7 +50,10 @@ public class UserController {
     })
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
+        System.out.println("-----controller------");
         UserResponse response = service.save(newUserRequest);
+        System.out.println("----got response----");
+        System.out.println("response: "+response);
         return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
     }
 
