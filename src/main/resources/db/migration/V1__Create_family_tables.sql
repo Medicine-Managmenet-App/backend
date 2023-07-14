@@ -15,7 +15,7 @@
     is_child SMALLINT,
     family_id BIGINT NOT NULL,
     age INTEGER,
---    weight DOUBLE PRECISION,
+    weight DOUBLE PRECISION,
     CONSTRAINT pk_family_members PRIMARY KEY (id)
  );
 
