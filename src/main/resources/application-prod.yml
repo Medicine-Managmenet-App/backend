@@ -1,5 +1,6 @@
 spring:
   flyway:
+    clean-on-validation-error: true
     baseline-on-migrate: true
   jpa:
     hibernate:
