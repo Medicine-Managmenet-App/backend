@@ -30,7 +30,6 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin
 public class UserController {
   
     final UserService service;
@@ -48,13 +47,10 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
+    @CrossOrigin(origins = "*")
     public ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
-        System.out.println("-----controller------");
         UserResponse response = service.save(newUserRequest);
-        System.out.println("----got response----");
-        System.out.println("response: "+response);
         return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
     }
 
