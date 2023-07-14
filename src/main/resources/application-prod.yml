@@ -10,10 +10,11 @@ spring:
       path: '/console'
 
   datasource:
-    driver-class-name: org. postgresql
+#    driver-class-name: org. postgresql
     url: ${JDBC_DATABASE_URL}
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
+
 
 pl.zaprogramujzycie.mma:
   jwt:
