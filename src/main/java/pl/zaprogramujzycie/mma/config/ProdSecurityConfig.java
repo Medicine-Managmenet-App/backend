@@ -68,6 +68,7 @@ public class ProdSecurityConfig {
         return source;
     }
 
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/users", "/v3/api-docs/**", "/v2/api-docs",
