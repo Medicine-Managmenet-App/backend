@@ -48,7 +48,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @CrossOrigin(allowedHeaders = "*")
+    @CrossOrigin(origins = "https://www.test-cors.org/", allowedHeaders = "*")
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
         System.out.println("-----controller------");
