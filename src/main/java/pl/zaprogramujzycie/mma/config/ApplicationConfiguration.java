@@ -22,5 +22,5 @@ public class ApplicationConfiguration {
     }
 
     private OpenApi openApi = new OpenApi();
-    private Jwt jwt = new Jwt();
+    private Jwt jwt;
 }
