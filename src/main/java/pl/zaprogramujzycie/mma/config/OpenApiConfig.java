@@ -25,7 +25,8 @@ public class OpenApiConfig {
         developmentServer.setDescription("Server URL in development environment");
 
         Server productionServer = new Server();
-        productionServer.setUrl(configuration.getOpenApi().getProductionURL());
+        // productionServer.setUrl(configuration.getOpenApi().getProductionURL());
+        productionServer.setUrl("https://medicine-management-c084b4004039.herokuapp.com");
         productionServer.setDescription("Server URL in production environment");
 
         Contact contact = new Contact();
