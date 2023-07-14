@@ -14,7 +14,7 @@
     name VARCHAR(250) NOT NULL,
     is_child SMALLINT,
     family_id BIGINT NOT NULL,
---    age INTEGER,
+    age INTEGER,
 --    weight DOUBLE PRECISION,
     CONSTRAINT pk_family_members PRIMARY KEY (id)
  );
