@@ -6,8 +6,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "pl.zaprogramujzycie.mma")
+@ConfigurationProperties("myConfig")
 public class ApplicationConfiguration {
+
+    private OpenApi openApi = new OpenApi();
+    private Jwt jwt;
 
     @Data
     public class OpenApi {
@@ -21,6 +24,5 @@ public class ApplicationConfiguration {
         private long expiration;
     }
 
-    private OpenApi openApi = new OpenApi();
-    private Jwt jwt = new Jwt();
+
 }

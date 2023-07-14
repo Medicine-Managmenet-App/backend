@@ -16,8 +16,3 @@ spring:
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
 
-
-pl.zaprogramujzycie.mma:
-  jwt:
-    signKey: prodSignKey
-    expiration: 86_400_000_000
