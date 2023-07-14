@@ -61,10 +61,11 @@ public class ProdSecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("*"));
         // configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*", "Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // configuration.setAllowedHeaders(Arrays.asList("*", "Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization"));
         // configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization", "*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("*/*", configuration);
         return source;
     }
 
