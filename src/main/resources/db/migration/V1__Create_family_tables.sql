@@ -16,7 +16,7 @@
     family_id BIGINT NOT NULL,
     age INTEGER,
     weight DOUBLE PRECISION,
-    CONSTRAINT pk_family_members PRIMARY KEY (id),
+    CONSTRAINT pk_family_members PRIMARY KEY (id)
  );
 
  CREATE TABLE medicines_to_families (
