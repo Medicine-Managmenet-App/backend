@@ -10,7 +10,7 @@ spring:
       path: '/console'
   datasource:
     driver-class-name: org.h2.Driver
-    url: 'jdbc:h2:mem:demo;DB_CLOSE_ON_EXIT=FALSE'
+    url: 'jdbc:h2:file:./spring-boot-h2-db.mv.db'
     username: 'sa'
     password:
 
