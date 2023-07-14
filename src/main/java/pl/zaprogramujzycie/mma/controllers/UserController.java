@@ -30,7 +30,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "https://medicine-management-c084b4004039.herokuapp.com/*")
+@CrossOrigin
 public class UserController {
   
     final UserService service;
