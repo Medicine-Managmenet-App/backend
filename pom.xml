@@ -115,8 +115,7 @@
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<scope>test</scope>
-		</dependency>sx z
-
+		</dependency>
 	</dependencies>
 
 	<build>
