@@ -13,13 +13,6 @@ spring:
     url: 'jdbc:h2:mem:demo;DB_CLOSE_ON_EXIT=FALSE'
     username: 'sa'
     password:
-  web:
-
-
-
-    web.filter.cors.allowed-methods=GET,POST,PUT,DELETE,ORIGIN
-    web.filter.cors.allowed-headers=Origin,Content-Type,Accept
-    web.filter.cors.allowed-origins=*
 
 pl.zaprogramujzycie.mma:
   jwt:
