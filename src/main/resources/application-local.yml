@@ -14,7 +14,7 @@ spring:
     password:
     driverClassName: org.h2.Driver
 
-#pl.zaprogramujzycie.mma:
-#  jwt:
-#    signKey: localSignKey
-#    expiration: 86_400_000_000
+pl.zaprogramujzycie.mma:
+  jwt:
+    signKey: localSignKey
+    expiration: 86_400_000_000
