@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,10 +42,6 @@ public class ProdSecurityConfig {
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .mvcMatchers("/swagger-ui/**").permitAll()
-                        .mvcMatchers("/v3/api-docs/**").permitAll()
-                        .mvcMatchers("/users").permitAll()
-                        .mvcMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement()
@@ -52,6 +49,14 @@ public class ProdSecurityConfig {
                 .and()
                 .addFilterBefore(tokenAuthorizationFilter, SecurityContextHolderAwareRequestFilter.class)
                 .build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/users", "/v3/api-docs/**", "/v2/api-docs",
+                "/configuration/ui", "/swagger-ui.html", "swagger-resources", "/swagger-resources/**", "/configuration/security",
+                "/swagger-ui/**", "swagger-ui/index.html",
+                "/console", "/console/**");
     }
 
     @Bean
