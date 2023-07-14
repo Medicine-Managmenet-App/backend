@@ -79,6 +79,7 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<UserResponse> findByLogin(@RequestParam final String login) throws NotFoundException {
+        System.out.println("--------find by login controller ---------");
         return ResponseEntity.ok(service.findByLogin(login));
     }
 
