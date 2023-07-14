@@ -18,7 +18,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import pl.zaprogramujzycie.mma.filters.TokenAuthorizationFilter;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -26,7 +25,6 @@ import java.util.List;
         securedEnabled = true
 )
 @EnableWebSecurity
-@EnableWebMvc
 @RequiredArgsConstructor
 @Profile("prod")
 public class ProdSecurityConfig {

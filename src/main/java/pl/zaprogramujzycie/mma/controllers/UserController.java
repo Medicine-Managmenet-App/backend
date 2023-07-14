@@ -30,6 +30,7 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 public class UserController {
   
     final UserService service;
@@ -48,7 +49,6 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PostMapping
-    @CrossOrigin(origins = "*")
     public ResponseEntity<UserResponse> createUser(@RequestBody final UserRequest newUserRequest) {
         UserResponse response = service.save(newUserRequest);
         return ResponseEntity.created(URI.create("/users/" + response.id())).body(response);
@@ -79,7 +79,6 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<UserResponse> findByLogin(@RequestParam final String login) throws NotFoundException {
-        System.out.println("--------find by login controller ---------");
         return ResponseEntity.ok(service.findByLogin(login));
     }
 
