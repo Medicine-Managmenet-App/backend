@@ -35,41 +35,26 @@ public class ProdSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(final HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable();
         return http
-                .cors()
-                // .cors().configurationSource(request -> {
-                //     final CorsConfiguration cors = new CorsConfiguration();
-                //     cors.setAllowedOrigins(List.of("*"));
-                //     cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"));
-                //     cors.setAllowedHeaders(List.of("Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization"));
-                //     cors.setExposedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization"));
-                //     return cors;
-                // })
+                .cors().configurationSource(request -> {
+                    final CorsConfiguration cors = new CorsConfiguration();
+                    cors.setAllowedOrigins(List.of("*"));
+                    cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"));
+                    cors.setAllowedHeaders(List.of("api-key", "Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization"));
+                    cors.setExposedHeaders(List.of("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization"));
+                    return cors;
+                })
                 .and()
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
                         .anyRequest().authenticated()
                 )
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // .sessionManagement()
+                // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .httpBasic()
                 .and()
-                .addFilterBefore(tokenAuthorizationFilter, SecurityContextHolderAwareRequestFilter.class)
+                // .addFilterBefore(tokenAuthorizationFilter, SecurityContextHolderAwareRequestFilter.class)
                 .build();
-    }
-
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "HEAD", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*", "Origin", "Accept", "X-Requested-With", "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Authorization", "api-key"));
-        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Authorization", "*"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
 
