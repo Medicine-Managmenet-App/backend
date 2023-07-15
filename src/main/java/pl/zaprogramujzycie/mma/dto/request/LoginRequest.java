@@ -5,7 +5,7 @@ import javax.validation.constraints.NotBlank;
 public record LoginRequest(
 
         @NotBlank
-        String username,
+        String login,
         @NotBlank
         String password
 

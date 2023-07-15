@@ -38,7 +38,7 @@ public class LoginController {
     })
     @PostMapping
     public void login(@RequestBody final LoginRequest loginRequest, final HttpServletResponse httpServletResponse) {
-        log.info("login() - user = {}", loginRequest.username());
+        log.info("login() - user = {}", loginRequest.login());
         loginService.login(loginRequest, httpServletResponse);
     }
 }
