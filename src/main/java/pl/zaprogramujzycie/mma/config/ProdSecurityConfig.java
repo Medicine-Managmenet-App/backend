@@ -48,6 +48,11 @@ public class ProdSecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .anyRequest().authenticated()
                 )
+                .formLogin((form) -> form
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .logout((logout) -> logout.permitAll())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
