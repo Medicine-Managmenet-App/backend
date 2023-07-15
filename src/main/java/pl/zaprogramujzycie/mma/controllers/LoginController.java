@@ -37,7 +37,7 @@ public class LoginController {
             @ApiResponse(responseCode = "401", description = "Failed to login")
     })
     @PostMapping
-    public void login(@RequestBody @Valid final LoginRequest loginRequest, final HttpServletResponse httpServletResponse) {
+    public void login(@RequestBody final LoginRequest loginRequest, final HttpServletResponse httpServletResponse) {
         log.info("login() - user = {}", loginRequest.username());
         loginService.login(loginRequest, httpServletResponse);
     }
