@@ -75,7 +75,7 @@ public class ProdSecurityConfig {
         return (web) -> web.ignoring().antMatchers("/users", "/v3/api-docs/**", "/v2/api-docs",
                 "/configuration/ui", "/swagger-ui.html", "swagger-resources", "/swagger-resources/**", "/configuration/security",
                 "/swagger-ui/**", "swagger-ui/index.html",
-                "/console", "/console/**", "/login", "/login/*");
+                "/console", "/console/**", "/login", "/login/*", "/users/admin", "/users/admin/*");
     }
 
     @Bean

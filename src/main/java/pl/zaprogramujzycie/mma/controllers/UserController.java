@@ -131,6 +131,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            description = "Returns all users",
+            tags = "Medicines"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Users found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+
     @GetMapping("/admin")
     public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam final String login) throws NotFoundException {
         return ResponseEntity.ok(service.findAll());
