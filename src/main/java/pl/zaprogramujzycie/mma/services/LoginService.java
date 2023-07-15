@@ -28,22 +28,15 @@ public class LoginService {
 
     public void login(final LoginRequest loginRequest, final HttpServletResponse httpServletResponse) {
         try{
-            System.out.println("-----login service----------------");
             final UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.username());
-            System.out.println("userdetails: " + userDetails);
             if (passwordEncoder.matches(loginRequest.password(), userDetails.getPassword())) {
-                System.out.println("----password matches-----");
                 final String token = "Bearer " + JWT.create()
                         .withSubject(loginRequest.username())
                         .withExpiresAt(new Date(System.currentTimeMillis() + configuration.getJwt().getExpiration()))
                         .sign(Algorithm.HMAC256(configuration.getJwt().getSignKey()));
-                System.out.println("--created token------------");
-                System.out.println("-----token: " + token);
                 httpServletResponse.setHeader(HttpHeaders.AUTHORIZATION, token);
-                System.out.println("token in servlet response: " + httpServletResponse);
             }
         } catch (final Exception exception) {
-            System.out.println("-----login exception -----");
             throw new LoginException(loginRequest.username(), loginRequest.password());
         }
     }
