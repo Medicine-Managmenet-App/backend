@@ -17,6 +17,8 @@ import pl.zaprogramujzycie.mma.repositories.UserRepository;
 import pl.zaprogramujzycie.mma.utils.mappers.UserMapper;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -83,4 +85,14 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userRequest.password()));
         repository.save(user);
     }
+
+    public List<UserResponse> findAll() throws NotFoundException {
+        List<User> response = repository.findAll();
+        List<UserResponse> responses = new ArrayList<>();
+        for (User u: response) {
+            responses.add(mapper.mapToResponse(u));
+        }
+        return responses;
+    }
+
 }

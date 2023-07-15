@@ -26,6 +26,7 @@ import pl.zaprogramujzycie.mma.services.UserService;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 
 
 @RestController
@@ -129,4 +130,10 @@ public class UserController {
         service.deleteById(id, principal);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam final String login) throws NotFoundException {
+        return ResponseEntity.ok(service.findAll());
+    }
+
 }
