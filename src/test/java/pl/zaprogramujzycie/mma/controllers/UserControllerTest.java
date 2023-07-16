@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import pl.zaprogramujzycie.mma.dto.response.FamilyResponse;
 import pl.zaprogramujzycie.mma.dto.response.MedicineResponse;
 import pl.zaprogramujzycie.mma.dto.response.UserResponse;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UserControllerTest {
+
+    @Autowired
+    private JacksonTester<UserRequest> json;
 
     @Autowired
     TestRestTemplate restTemplate;
@@ -65,8 +70,9 @@ public class UserControllerTest {
     @Test
     @DirtiesContext
     //This test fails due to password encoding, so passwords are not asserted
-    void shouldCreateANewUser() {
+    void shouldCreateANewUser() throws IOException {
         UserRequest newUser = new UserRequest( "newLogin", "newPassword");
+        System.out.println(json.write(newUser));
         ResponseEntity<Void> createResponse = restTemplate
                 .postForEntity("/users", newUser, Void.class);
 
