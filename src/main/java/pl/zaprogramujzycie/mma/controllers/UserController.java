@@ -31,6 +31,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin
 public class UserController {
   
     final UserService service;
@@ -128,20 +129,6 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(final Principal principal, @PathVariable final long id) throws NotFoundException {
         service.deleteById(id, principal);
         return ResponseEntity.noContent().build();
-    }
-
-    @Operation(
-            description = "Returns all users",
-            tags = "Medicines"
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Users found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-
-    @GetMapping("/admin")
-    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam final String login) throws NotFoundException {
-        return ResponseEntity.ok(service.findAll());
     }
 
 }
