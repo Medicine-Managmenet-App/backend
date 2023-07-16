@@ -3,11 +3,7 @@ spring:
     baseline-on-migrate: true
   jpa:
     hibernate:
-      ddl-auto: create-drop
-  h2:
-    console:
-      enabled: true
-      path: '/console'
+      ddl-auto: create
 
   datasource:
     url: ${JDBC_DATABASE_URL}

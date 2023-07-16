@@ -19,6 +19,7 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
+@CrossOrigin
 @RequestMapping("/families/{familyId}/familyMembers/{familyMemberId}/prescriptions/{prescriptionId}/prescribedMedicines")
 public class PrescribedMedicineController {
 

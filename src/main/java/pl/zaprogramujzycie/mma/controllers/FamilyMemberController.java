@@ -16,6 +16,7 @@ import pl.zaprogramujzycie.mma.services.FamilyMemberService;
 import java.net.URI;
 import java.security.Principal;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/families/{familyId}/familyMembers")
 public class FamilyMemberController {
