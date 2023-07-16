@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,12 +26,12 @@ import pl.zaprogramujzycie.mma.services.UserService;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 
 
 @RestController
 @RequestMapping("/users")
-@RequiredArgsConstructor
-@Profile("prod")
+@CrossOrigin
 public class UserController {
   
     final UserService service;
@@ -129,4 +130,19 @@ public class UserController {
         service.deleteById(id, principal);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(
+            description = "Returns all users",
+            tags = "Medicines"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Users found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam final String login) throws NotFoundException {
+        return ResponseEntity.ok(service.findAll());
+    }
+
 }
