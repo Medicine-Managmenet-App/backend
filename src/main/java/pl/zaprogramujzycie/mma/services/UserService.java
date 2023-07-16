@@ -86,13 +86,4 @@ public class UserService {
         repository.save(user);
     }
 
-    public List<UserResponse> findAll() throws NotFoundException {
-        List<User> response = repository.findAll();
-        List<UserResponse> responses = new ArrayList<>();
-        for (User u: response) {
-            responses.add(mapper.mapToResponse(u));
-        }
-        return responses;
-    }
-
 }

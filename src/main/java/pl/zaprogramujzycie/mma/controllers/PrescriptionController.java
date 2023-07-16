@@ -13,11 +13,9 @@ import pl.zaprogramujzycie.mma.services.PrescriptionService;
 
 import java.net.URI;
 import java.security.Principal;
-// import pl.zaprogramujzycie.mma.services.PrescriptionsService;
-
-
 
 @RestController
+@CrossOrigin
 @RequestMapping("/families/{familyId}/familyMembers/{familyMemberId}/prescriptions")
 public class PrescriptionController {
 
