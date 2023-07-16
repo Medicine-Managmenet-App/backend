@@ -40,7 +40,15 @@ System meets following non-functional requirenments:
 * the authentication patterns are stored in a relational database, 
 * passwords are stored in the form of hashes calculated with the SHA-256 algorithm,
 * unique logins for user accounts are required,
-* business data of application are stored in relational database,
+* * business data of application are stored in relational database,
 * the relational model is mapped using the JPA mapping standard,
 * it provides a mechanism for reporting messages about events and collecting them in the event log,
+
+### Open Api
+Open Api of the application is available at:
+https://medicine-management-c084b4004039.herokuapp.com/v3/api-docs
+
+Swagger UI is available at:
+https://medicine-management-c084b4004039.herokuapp.com/swagger-ui/index.html
+
 
